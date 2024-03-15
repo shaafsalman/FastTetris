@@ -1,9 +1,11 @@
-import sys
+import pygame,sys
+import pygame.time
 
-import pygame
+import game
+from game import Game
+from colors import Colors
 
-from grid import Grid
-from all_blocks import *
+
 
 pygame.init()
 
@@ -11,21 +13,34 @@ screen = pygame.display.set_mode((300, 600))
 
 pygame.display.set_caption("FastTetris")
 clock = pygame.time.Clock()
-game_grid = Grid()
-game_grid.print_grid()
 
 dark_blue = (44, 44, 127)
-block = LBlock()
-block.move(4,3)
+
+
+GAME_UPDATE =  pygame.USEREVENT
+pygame.time.set_timer(GAME_UPDATE, 200)
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        if event.type == pygame.KEYDOWN:
 
-    screen.fill(dark_blue)
-    game_grid.draw(screen)
-    block.draw(screen)
+            if event.key == pygame.K_LEFT and game.game_over == False:
+                game.move_left()
+            if event.key == pygame.K_RIGHT and game.game_over == False:
+                game.move_right()
+            if event.key == pygame.K_DOWN and game.game_over == False:
+                game.move_down()
+                game.update_score(0, 1)
+            if event.key == pygame.K_UP and game.game_over == False:
+                game.rotate()
+        if event.type == GAME_UPDATE and game.game_over == False:
+            game.move_down()
+
+
+    game.draw(screen)
 
     pygame.display.update()
     clock.tick(60)
