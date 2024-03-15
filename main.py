@@ -16,7 +16,7 @@ game_grid.print_grid()
 
 dark_blue = (44, 44, 127)
 block = LBlock()
-
+block.move(4,3)
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
