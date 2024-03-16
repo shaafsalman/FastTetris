@@ -1,63 +1,89 @@
-import pygame, sys
-from game import Game
-from colors import Colors
+import pygame
+import sys
+import subprocess
+from emulator import run_game
 
+
+
+# Initialize Pygame
 pygame.init()
 
+# Colors
+WHITE = (255, 255, 255)
+DARK_BLUE = (3, 43, 73)
+LIGHT_BLUE = (173, 216, 230)
+GRAY = (200, 200, 200)
+
+# Set up the screen
+screen = pygame.display.set_mode((1300, 700))
+SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
+
+# Load images
+background_image = pygame.image.load("assets/backgrounds/background (X).jpg").convert()
+background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+logo_image = pygame.image.load("logo.png").convert_alpha()
+
+# Fonts
 title_font = pygame.font.Font(None, 40)
-score_surface = title_font.render("Score", True, Colors.white)
-next_surface = title_font.render("Next", True, Colors.white)
-game_over_surface = title_font.render("GAME OVER", True, Colors.white)
+button_font = pygame.font.Font(None, 20)
 
-score_rect = pygame.Rect(320, 55, 170, 60)
-next_rect = pygame.Rect(320, 215, 170, 180)
+# Text surfaces
+title_surface = title_font.render("Fast Tetris", True, WHITE)
+play_surface = button_font.render("Play Yourself", True, WHITE)
+ai_surface = button_font.render("Let AI do the work", True, WHITE)
 
-screen = pygame.display.set_mode((500, 620))
-pygame.display.set_caption("Fast Tetris")
+# Button rects
+button_width = 300
+button_height = 60
+play_rect = pygame.Rect((SCREEN_WIDTH - button_width) // 2, SCREEN_HEIGHT // 2 - button_height, button_width, button_height)
+ai_rect = pygame.Rect((SCREEN_WIDTH - button_width) // 2, SCREEN_HEIGHT // 2 + 20, button_width, button_height)
 
-clock = pygame.time.Clock()
-
-game = Game()
-
-GAME_UPDATE = pygame.USEREVENT
-pygame.time.set_timer(GAME_UPDATE, 200)
-
+# Game loop
 while True:
+    screen.fill((0, 0, 0))
+    mouse_pos = pygame.mouse.get_pos()
+    click = False
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-        if event.type == pygame.KEYDOWN:
-            if game.game_over:
-                game.game_over = False
-                game.reset()
-            if event.key == pygame.K_LEFT and game.game_over == False:
-                game.move_left()
-            if event.key == pygame.K_RIGHT and game.game_over == False:
-                game.move_right()
-            if event.key == pygame.K_DOWN and game.game_over == False:
-                game.move_down()
-                game.update_score(0, 1)
-            if event.key == pygame.K_UP and game.game_over == False:
-                game.rotate()
-        if event.type == GAME_UPDATE and game.game_over == False:
-            game.move_down()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                click = True
 
-    # Drawing
-    score_value_surface = title_font.render(str(game.score), True, Colors.white)
+    # Draw the background
+    screen.blit(background_image, (0, 0))
 
-    screen.fill(Colors.dark_blue)
-    screen.blit(score_surface, (365, 20, 50, 50))
-    screen.blit(next_surface, (375, 180, 50, 50))
+    # Draw the logo
+    logo_rect = logo_image.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 4))
+    screen.blit(logo_image, logo_rect)
 
-    if game.game_over:
-        screen.blit(game_over_surface, (320, 450, 50, 50))
+    # Draw the title
+    title_rect = title_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 8))
+    screen.blit(title_surface, title_rect)
 
-    pygame.draw.rect(screen, Colors.light_blue, score_rect, 0, 10)
-    screen.blit(score_value_surface, score_value_surface.get_rect(centerx=score_rect.centerx,
-                                                                  centery=score_rect.centery))
-    pygame.draw.rect(screen, Colors.light_blue, next_rect, 0, 10)
-    game.draw(screen)
+    # Draw the buttons
+    play_color = LIGHT_BLUE
+    ai_color = LIGHT_BLUE
+    if play_rect.collidepoint(mouse_pos):
+        if click:
+            run_game()
+        play_color = GRAY
+    if ai_rect.collidepoint(mouse_pos):
+        if click:
+            # Placeholder for AI functionality (not implemented in this example)
+            print("Let AI do the work...")
+        ai_color = GRAY
 
-    pygame.display.update()
-    clock.tick(60)
+    pygame.draw.rect(screen, play_color, play_rect)
+    pygame.draw.rect(screen, ai_color, ai_rect)
+    pygame.draw.rect(screen, DARK_BLUE, play_rect, 4)
+    pygame.draw.rect(screen, DARK_BLUE, ai_rect, 4)
+
+    # Align text to center of buttons
+    play_text_rect = play_surface.get_rect(center=play_rect.center)
+    ai_text_rect = ai_surface.get_rect(center=ai_rect.center)
+    screen.blit(play_surface, play_text_rect)
+    screen.blit(ai_surface, ai_text_rect)
+
+    pygame.display.flip()
