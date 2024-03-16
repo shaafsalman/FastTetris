@@ -2,7 +2,7 @@ import pygame
 import sys
 from game import Game
 from colors import Colors
-
+from agent import Agent
 
 class TetrisGame:
     def __init__(self):
@@ -19,6 +19,7 @@ class TetrisGame:
         pygame.display.set_caption("Fast Tetris")
         self.clock = pygame.time.Clock()
         self.game = Game()
+        self.agent = Agent()  # Create an instance of the Agent class
         self.GAME_UPDATE = pygame.USEREVENT
         pygame.time.set_timer(self.GAME_UPDATE, 200)
 
@@ -27,22 +28,18 @@ class TetrisGame:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if self.game.game_over:
-                    self.game.game_over = False
-                    self.game.reset()
-                if not self.game.game_over:
-                    if event.key == pygame.K_LEFT:
-                        self.game.move_left()
-                    elif event.key == pygame.K_RIGHT:
-                        self.game.move_right()
-                    elif event.key == pygame.K_DOWN:
-                        self.game.move_down()
-                        self.game.update_score(0, 1)
-                    elif event.key == pygame.K_UP:
-                        self.game.rotate()
             if event.type == self.GAME_UPDATE and not self.game.game_over:
-                self.game.move_down()
+                # Agent makes a move every time the game updates
+                move = self.agent.make_move()
+                if move == "LEFT":
+                    self.game.move_left()
+                elif move == "RIGHT":
+                    self.game.move_right()
+                elif move == "DOWN":
+                    self.game.move_down()
+                    self.game.update_score(0, 1)
+                elif move == "ROTATE":
+                    self.game.rotate()
 
     def render(self):
         score_value_surface = self.title_font.render(str(self.game.score), True, Colors.white)
