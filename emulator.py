@@ -11,9 +11,11 @@ class TetrisGame:
         self.score_surface = self.title_font.render("Score", True, Colors.white)
         self.next_surface = self.title_font.render("Next", True, Colors.white)
         self.game_over_surface = self.title_font.render("GAME OVER", True, Colors.white)
-        self.score_rect = pygame.Rect(320, 55, 170, 60)
-        self.next_rect = pygame.Rect(320, 215, 170, 180)
-        self.screen = pygame.display.set_mode((1300, 700))
+        self.score_rect = pygame.Rect(1200, 55, 170, 60)
+        self.next_rect = pygame.Rect(1200, 215, 170, 180)
+        self.screen_width = 1300
+        self.screen_height = 700
+        self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Fast Tetris")
         self.clock = pygame.time.Clock()
         self.game = Game()
@@ -45,13 +47,23 @@ class TetrisGame:
     def render(self):
         score_value_surface = self.title_font.render(str(self.game.score), True, Colors.white)
         self.screen.fill(Colors.dark_blue)
-        self.screen.blit(self.score_surface, self.score_rect)
-        self.screen.blit(self.next_surface, self.next_rect)
+        self.screen.blit(self.score_surface, (320, 20))  # Adjust as necessary
+        self.screen.blit(score_value_surface, (320, 55))  # Adjust as necessary
+        self.screen.blit(self.next_surface, (320, 215))  # Adjust as necessary
+
+        # Assuming self.game.next_shape returns a shape object with a method to draw itself or a matrix of its structure
+        next_shape_preview_position = (320, 250)  # Adjust starting position as necessary
+        if hasattr(self.game, 'next_shape') and self.game.next_shape is not None:
+            # This is a placeholder for drawing the next shape, adjust according to your game's implementation
+            for y, row in enumerate(self.game.next_shape.matrix):  # Assuming the shape has a 'matrix' attribute
+                for x, block in enumerate(row):
+                    if block:  # Assuming a nonzero value indicates a block
+                        pygame.draw.rect(self.screen, Colors.light_blue,
+                                         pygame.Rect(next_shape_preview_position[0] + x * 20,
+                                                     next_shape_preview_position[1] + y * 20, 20, 20))
+
         if self.game.game_over:
             self.screen.blit(self.game_over_surface, (320, 450))
-        pygame.draw.rect(self.screen, Colors.light_blue, self.score_rect, 0, 10)
-        self.screen.blit(score_value_surface, score_value_surface.get_rect(center=self.score_rect.center))
-        pygame.draw.rect(self.screen, Colors.light_blue, self.next_rect, 0, 10)
         self.game.draw(self.screen)
         pygame.display.update()
 

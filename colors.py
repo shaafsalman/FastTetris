@@ -17,6 +17,11 @@ class Colors:
     LIGHT_BLUE = (173, 216, 230)
     GRAY = (200, 200, 200)
 
+    BACKGROUND_COLOR = (23, 32, 42)
+    ACCENT_COLOR = (127, 219, 255)
+    TEXT_COLOR = (236, 240, 241)
+    GAME_OVER_COLOR = (231, 76, 60)
+
     @classmethod
     def get_cell_colors(cls):
         return [cls.dark_grey, cls.green, cls.red, cls.orange, cls.yellow, cls.purple, cls.cyan, cls.blue]
