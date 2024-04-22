@@ -1,5 +1,5 @@
 class Colors:
-    grid_clr =	(0,0,0)
+    grid_clr = (0, 0, 0)
     green = (0, 255, 0)
     red = (255, 0, 0)
     orange = (255, 140, 0)
@@ -19,3 +19,4 @@ class Colors:
     @classmethod
     def get_cell_colors(cls):
         return [cls.grid_clr, cls.green, cls.red, cls.orange, cls.yellow, cls.purple, cls.cyan, cls.blue]
+

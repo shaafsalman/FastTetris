@@ -1,8 +1,5 @@
 import pygame
 import sys
-import os
-
-import game
 from game import Game
 from colors import Colors
 
@@ -14,6 +11,7 @@ class TetrisGame:
         # Fonts
         self.title_font = pygame.font.Font(None, 40)
         self.score_font = pygame.font.Font(None, 30)
+        self.button_font = pygame.font.Font("assets/fonts/Poppins-Regular.ttf", 28)
 
         # Text surfaces
         self.score_surface = self.title_font.render("Score", True, Colors.white)
@@ -22,16 +20,19 @@ class TetrisGame:
         self.game_over_surface = self.title_font.render("GAME OVER", True, Colors.white)
         self.highest_score_surface = self.title_font.render("Highest Score: ", True, Colors.white)
         self.agent_surface = self.title_font.render("Agent: ", True, Colors.white)
+        self.back_surface = self.button_font.render("Back", True, Colors.white)
 
         # Rectangles
-        self.score_rect = pygame.Rect(1200, 55, 170, 60)
-        self.lines_rect = pygame.Rect(1200, 55, 170, 60)
-        self.next_rect = pygame.Rect(1200, 215, 170, 180)
+        self.score_rect = pygame.Rect(320, 20, 200, 40)
+        self.lines_rect = pygame.Rect(520, 20, 250, 40)
+        self.next_rect = pygame.Rect(320, 215, 200, 40)
+        self.game_over_rect = pygame.Rect(320, 450, 300, 40)
         self.highest_score_rect = pygame.Rect(20, 20, 200, 40)
         self.agent_rect = pygame.Rect(20, 70, 200, 40)
+        self.back_rect = pygame.Rect(890, 10, 100, 50)
 
         # Screen setup
-        self.screen_width, self.screen_height = 1300, 700
+        self.screen_width, self.screen_height = 1000, 700
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Fast Tetris")
 
@@ -48,7 +49,6 @@ class TetrisGame:
         self.agent_type = "Human"
 
     def handle_events(self):
-        self.highest_score = self.game.highest_score
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -73,6 +73,13 @@ class TetrisGame:
 
             if event.type == self.GAME_UPDATE and not self.game.game_over:
                 self.game.move_down()
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_pos = pygame.mouse.get_pos()
+                if self.back_rect.collidepoint(mouse_pos):
+                    return True  # Indicates Back button click
+
+        return False  # No Back button click
 
     def render(self):
         self.screen.fill(Colors.BACKGROUND_COLOR)
@@ -118,6 +125,12 @@ class TetrisGame:
             midtop=(next_shape_preview_position[0] + 300, next_shape_preview_position[1] + 290))
         self.screen.blit(agent_type_surface, agent_type_rect)
 
+        # Draw back button
+        back_color = Colors.light_blue
+        pygame.draw.rect(self.screen, back_color, self.back_rect, border_radius=10)
+        pygame.draw.rect(self.screen, Colors.dark_blue, self.back_rect, width=4, border_radius=10)
+        self.screen.blit(self.back_surface, self.back_surface.get_rect(center=self.back_rect.center))
+
         # Draw game over message if applicable
         if self.game.game_over:
             self.screen.blit(self.game_over_surface, (320, 450))
@@ -127,11 +140,16 @@ class TetrisGame:
 
     def run_game(self):
         while True:
-            self.handle_events()
+            if self.handle_events():
+                return  # Exit the game loop
+
             self.render()
-            pygame.display.flip()
             self.clock.tick(60)
 
 
 if __name__ == "__main__":
-    TetrisGame().run_game()
+    game = TetrisGame()
+    while True:
+        game.run_game()
+        # After the game loop exits, create a new instance for a new game
+        game = TetrisGame()
