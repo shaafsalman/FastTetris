@@ -21,7 +21,6 @@ class AITetrisGame:
         self.lines_rect = pygame.Rect(520, 20, 250, 40)
         self.next_rect = pygame.Rect(320, 215, 200, 40)
         self.game_over_rect = pygame.Rect(320, 450, 300, 40)
-        self.highest_score_rect = pygame.Rect(20, 20, 200, 40)
         self.agent_rect = pygame.Rect(20, 70, 200, 40)
         self.back_rect = pygame.Rect(890, 10, 100, 50)
         self.screen_width = 1000
@@ -76,18 +75,10 @@ class AITetrisGame:
         # Draw next shape
         self.screen.blit(self.next_surface, (320, 215))
         next_shape_preview_position = (320, 250)
-        if hasattr(self.game, 'next_shape') and self.game.next_shape is not None:
-            for y, row in enumerate(self.game.next_shape.matrix):
-                for x, block in enumerate(row):
-                    if block:
-                        pygame.draw.rect(self.screen, Colors.light_blue,
-                                         pygame.Rect(next_shape_preview_position[0] + x * 20,
-                                                     next_shape_preview_position[1] + y * 20, 20, 20))
 
         highest_score_text_rect = self.highest_score_surface.get_rect(
             midtop=(next_shape_preview_position[0] + 100, next_shape_preview_position[1] + 240))
         self.screen.blit(self.highest_score_surface, highest_score_text_rect)
-
         highest_score_value_surface = self.score_font.render(str(self.highest_score), True, Colors.white)
         highest_score_value_rect = highest_score_value_surface.get_rect(
             midtop=(next_shape_preview_position[0] + 300, next_shape_preview_position[1] + 240))
@@ -128,4 +119,4 @@ if __name__ == "__main__":
     while True:
         game.run_game()
         # After the game loop exits, create a new instance for a new game
-        game = AITetrisGame()
+        # game = AITetrisGame()

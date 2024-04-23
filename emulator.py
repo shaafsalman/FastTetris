@@ -97,13 +97,6 @@ class TetrisGame:
         # Draw next shape
         self.screen.blit(self.next_surface, (320, 215))
         next_shape_preview_position = (320, 250)
-        if hasattr(self.game, 'next_shape') and self.game.next_shape is not None:
-            for y, row in enumerate(self.game.next_shape.matrix):
-                for x, block in enumerate(row):
-                    if block:
-                        pygame.draw.rect(self.screen, Colors.light_blue,
-                                         pygame.Rect(next_shape_preview_position[0] + x * 20,
-                                                     next_shape_preview_position[1] + y * 20, 20, 20))
 
         # Draw highest score below next shape
         highest_score_text_rect = self.highest_score_surface.get_rect(
@@ -152,4 +145,4 @@ if __name__ == "__main__":
     while True:
         game.run_game()
         # After the game loop exits, create a new instance for a new game
-        game = TetrisGame()
+        # game = TetrisGame()
