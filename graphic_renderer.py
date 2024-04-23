@@ -3,10 +3,9 @@ import sys
 
 from game import Game
 from colors import Colors
-from player import Player
 
 
-class TetrisBase:
+class renderer:
     def __init__(self):
         pygame.init()
         self.title_font = pygame.font.Font(None, 40)
@@ -29,21 +28,16 @@ class TetrisBase:
         self.screen_height = 700
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Fast Tetris")
-        self.clock = pygame.time.Clock()
-        self.game = Game()
-        self.GAME_UPDATE = pygame.USEREVENT
-        self.highest_score = self.game.highest_score
-        pygame.time.set_timer(self.GAME_UPDATE, 200)
 
-    def render(self):
+    def render(self, game, highest_score, agent_type):
         self.screen.fill(Colors.BACKGROUND_COLOR)
 
         self.screen.blit(self.score_surface, (320, 20))
-        score_value_surface = self.score_font.render(str(self.game.score), True, Colors.white)
+        score_value_surface = self.score_font.render(str(game.score), True, Colors.white)
         self.screen.blit(score_value_surface, (320, 55))
 
         self.screen.blit(self.lines_surface, (520, 20))
-        lines_value_surface = self.score_font.render(str(self.game.lines), True, Colors.white)
+        lines_value_surface = self.score_font.render(str(game.lines), True, Colors.white)
         self.screen.blit(lines_value_surface, (520, 55))
 
         self.screen.blit(self.next_surface, (320, 215))
@@ -52,7 +46,7 @@ class TetrisBase:
         highest_score_text_rect = self.highest_score_surface.get_rect(
             midtop=(next_shape_preview_position[0] + 100, next_shape_preview_position[1] + 240))
         self.screen.blit(self.highest_score_surface, highest_score_text_rect)
-        highest_score_value_surface = self.score_font.render(str(self.highest_score), True, Colors.white)
+        highest_score_value_surface = self.score_font.render(str(highest_score), True, Colors.white)
         highest_score_value_rect = highest_score_value_surface.get_rect(
             midtop=(next_shape_preview_position[0] + 300, next_shape_preview_position[1] + 240))
         self.screen.blit(highest_score_value_surface, highest_score_value_rect)
@@ -61,7 +55,7 @@ class TetrisBase:
             midtop=(next_shape_preview_position[0] + 100, next_shape_preview_position[1] + 290))
         self.screen.blit(self.agent_surface, agent_text_rect)
 
-        agent_type_surface = self.score_font.render(self.agent.agent_type, True, Colors.white)
+        agent_type_surface = self.score_font.render(agent_type, True, Colors.white)
         agent_type_rect = agent_type_surface.get_rect(
             midtop=(next_shape_preview_position[0] + 300, next_shape_preview_position[1] + 290))
         self.screen.blit(agent_type_surface, agent_type_rect)
@@ -71,11 +65,8 @@ class TetrisBase:
         pygame.draw.rect(self.screen, Colors.dark_blue, self.back_rect, width=4, border_radius=10)
         self.screen.blit(self.back_surface, self.back_surface.get_rect(center=self.back_rect.center))
 
-        if self.game.game_over:
+        if game.game_over:
             self.screen.blit(self.game_over_surface, (320, 450))
 
-        self.game.draw(self.screen)
+        game.draw(self.screen)
         pygame.display.update()
-
-
-
