@@ -56,6 +56,22 @@ class Grid:
             for column in range(self.num_cols):
                 self.grid[row][column] = 0
 
+    def find_empty_holes(self):
+        empty_holes = 0
+        for column in range(self.num_cols):
+            for row in range(self.num_rows - 1, 0, -1):
+                if self.grid[row][column] == 0 and self.grid[row - 1][column] != 0:
+                    empty_holes += 1
+        return empty_holes
+
+    def find_blockades(self):
+        blockades = 0
+        for column in range(self.num_cols):
+            for row in range(self.num_rows - 1):
+                if self.grid[row][column] != 0 and self.grid[row + 1][column] == 0:
+                    blockades += 1
+        return blockades
+
     def draw(self, screen):
         for row in range(self.num_rows):
             for column in range(self.num_cols):
