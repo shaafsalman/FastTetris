@@ -37,24 +37,36 @@ class GA(renderer):
             self.population.append(player)
 
     def play_game(self, current_player):
-        # print("In Play_game")
+        # Get the moves from the current player
+        moves = current_player.getPath(self.game)
+        #     # moves = current_player.getPath(self.game.grid, self.game.current_block, self.game.next_block)
 
-        moves = current_player.getPath(self.game.grid, self.game.current_block, self.game.next_block)
-        while current_player.isAlive:
-            for move in moves:
-                print(move)
-                if move == "LEFT":
-                    self.game.move_left()
-                elif move == "RIGHT":
-                    self.game.move_right()
-                elif move == "DOWN":
-                    self.game.move_down()
-                    self.game.update_score(0, 1)
-                elif move == "ROTATE":
-                    self.game.rotate()
+        # Iterate through each move
+        for move in moves:
+            print(move)
+            if self.game.game_over:
+                self.game.game_over = False
+                self.game.reset()
+                if self.game.score > self.highest_score:
+                    self.highest_score = self.game.score
 
+            # Execute the move
+            if move == "LEFT":
+                self.game.move_left()
+            elif move == "RIGHT":
+                self.game.move_right()
+            elif move == "DOWN":
+                self.game.move_down()
+                self.game.update_score(0, 1)
+            elif move == "ROTATE":
+                self.game.rotate()
+
+            # Render the game state after each move
             self.render(self.game, self.highest_score, "AI")
-            self.clock.tick(60)
+
+            pygame.time.delay(int(1000 / 5))
+
+            # Check for any events during the delay
             if self.handle_events():
                 break
 
@@ -78,7 +90,6 @@ class GA(renderer):
 
             print(f"Generation {generation + 1}")
             for player in self.population:
-
                 self.play_game(player)
             # self.evolve()  # Uncomment this if needed
             print(f"Best player's score in generation {generation + 1}: {self.population[0].score}")

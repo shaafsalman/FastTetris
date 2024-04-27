@@ -7,8 +7,6 @@ from Base_Emulator import TetrisBase
 
 class Human_Emulator(TetrisBase):
 
-
-
     # self down
     def handle_events(self):
         for event in pygame.event.get():
