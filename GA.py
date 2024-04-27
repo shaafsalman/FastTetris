@@ -28,10 +28,15 @@ class GA(Renderer):
         # Initialize the population with random players
         for _ in range(self.population_size):
             # Generate random weights for player attributes
-            height_weight = uniform(-1.0, 1.0)
-            lines_cleared_weight = uniform(-1.0, 1.0)
-            holes_weight = uniform(-1.0, 1.0)
-            blockades_weight = uniform(-1.0, 1.0)
+            height_weight = uniform(-15.0, 0.0)
+            lines_cleared_weight = uniform(0.0, 15.0)
+            holes_weight = uniform(-15.0, 0.0)
+            blockades_weight = uniform(-15.0, 0.0)
+
+            # height_weight = -15
+            # lines_cleared_weight = 5
+            # holes_weight = -5
+            # blockades_weight = -1
 
             # Create player object with random weights
             player = Player(height_weight, lines_cleared_weight, holes_weight, blockades_weight)
@@ -53,12 +58,14 @@ class GA(Renderer):
 
     def play_game(self, current_player):
         # Get the moves from the current player
-        path = current_player.get_path(self.game)
-        moves = path.moves
+        self.game.grid.print_grid()
         is_alive = True
 
         # Iterate through each move
         while is_alive:
+            current_grid = self.game.grid.copy()
+            path = current_player.get_path(self.game,current_grid)
+            moves = path.moves
 
             for move in moves:
                 # print(move)

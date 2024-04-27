@@ -16,13 +16,16 @@ class Player:
         self.grid = None
         self.game = None
 
-    def get_path(self, game):
+    def get_path(self, game, current_grid):
         # Set the grid, current_block, and next_block in self
         self.game = game
         searcher = PathSearcher()
-        self.All_Possible_Paths = searcher.calculate_paths(game, self.height_weight, self.lines_cleared_weight,
+        self.All_Possible_Paths = searcher.calculate_paths(game, current_grid, self.height_weight, self.lines_cleared_weight,
                                                            self.holes_weight, self.blockades_weight)
 
+        print("nUMBER of mOVES")
+        print(str(self.All_Possible_Paths.__len__()))
+        # game.grid.print_grid()
         optimal_path = self.choose_optimal_path()
         optimal_path.print_details()
 

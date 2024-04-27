@@ -81,6 +81,8 @@ class Game:
             self.lock_block()
 
     def lock_block(self):
+        # print("Lock Block Called")
+        # self.grid.print_grid()
         tiles = self.current_block.get_cell_positions()
         for position in tiles:
             self.grid.grid[position.row][position.column] = self.current_block.id
@@ -112,8 +114,8 @@ class Game:
         self.current_block.rotate()
         if self.block_inside() == False or self.block_fits() == False:
             self.current_block.undo_rotation()
-        else:
-            self.rotate_sound.play()
+        # else:
+        #     # self.rotate_sound.play()
 
     def block_inside(self):
         tiles = self.current_block.get_cell_positions()
@@ -137,4 +139,3 @@ class Game:
             self.next_block.draw(screen, 255, 280)
         else:
             self.next_block.draw(screen, 270, 270)
-
