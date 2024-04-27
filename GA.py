@@ -4,12 +4,12 @@ import sys
 
 from game import Game
 from colors import Colors
-from graphic_renderer import renderer
+from graphic_renderer import Renderer
 from player import Player
 from random import uniform
 
 
-class GA(renderer):
+class GA(Renderer):
     def __init__(self, population_size, mutation_rate, crossover_rate):
         super().__init__()
         self.population_size = population_size
@@ -63,7 +63,7 @@ class GA(renderer):
                 self.game.rotate()
 
             # Render the game state after each move
-            self.render(self.game, self.highest_score, "AI")
+            self.render(self.game, current_player, self.highest_score, "AI")
 
             pygame.time.delay(int(1000 / 5))
 
@@ -90,8 +90,12 @@ class GA(renderer):
                 break
 
             print(f"Generation {generation + 1}")
+            player_number = 1
             for player in self.population:
+                player.generation_number = generation + 1
+                player.number = player_number
                 self.play_game(player)
+                player_number += 1
             # self.evolve()  # Uncomment this if needed
             print(f"Best player's score in generation {generation + 1}: {self.population[0].score}")
             self.clock.tick(2000)

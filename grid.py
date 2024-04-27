@@ -51,26 +51,47 @@ class Grid:
                 self.move_row_down(row, completed)
         return completed
 
+    def calculate_holes(self):
+        """
+        Calculates the number of holes in the grid.
+        A hole is an empty cell with a non-empty cell above it.
+        """
+        holes = 0
+        for col in range(self.num_cols):
+            for row in range(self.num_rows - 1):
+                if self.is_empty(row, col) and not self.is_empty(row + 1, col):
+                    holes += 1
+        return holes
+
+    def calculate_blockades(self):
+        """
+        Calculates the number of blockades in the grid.
+        A blockade is a non-empty cell with an empty cell below it.
+        """
+        blockades = 0
+        for col in range(self.num_cols):
+            for row in range(self.num_rows - 1):
+                if not self.is_empty(row, col) and self.is_empty(row + 1, col):
+                    blockades += 1
+        return blockades
+
+    def calculate_height(self):
+        """
+        Calculates the height of the highest column in the grid.
+        """
+        heights = [0] * self.num_cols
+        for col in range(self.num_cols):
+            for row in range(self.num_rows):
+                if not self.is_empty(row, col):
+                    heights[col] = self.num_rows - row
+                    break
+        return max(heights)
+
     def reset(self):
         for row in range(self.num_rows):
             for column in range(self.num_cols):
                 self.grid[row][column] = 0
 
-    def find_empty_holes(self):
-        empty_holes = 0
-        for column in range(self.num_cols):
-            for row in range(self.num_rows - 1, 0, -1):
-                if self.grid[row][column] == 0 and self.grid[row - 1][column] != 0:
-                    empty_holes += 1
-        return empty_holes
-
-    def find_blockades(self):
-        blockades = 0
-        for column in range(self.num_cols):
-            for row in range(self.num_rows - 1):
-                if self.grid[row][column] != 0 and self.grid[row + 1][column] == 0:
-                    blockades += 1
-        return blockades
 
     def copy(self):
         copied_grid = Grid()

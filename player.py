@@ -7,6 +7,8 @@ class Player:
         self.lines_cleared_weight = lines_cleared_weight
         self.holes_weight = holes_weight
         self.blockades_weight = blockades_weight
+        self.number = 0
+        self.generation_number = 0
         self.score = 0
         self.isAlive = True
         self.agent_type = "AI"
@@ -22,6 +24,7 @@ class Player:
                                                            self.holes_weight, self.blockades_weight)
 
         optimal_path = self.choose_optimal_path()
+        optimal_path.print_details()
 
         # # Generate a single optimal path for testing
         # optimal_path = ["LEFT", "LEFT", "LEFT", "LEFT", "LEFT", "LEFT", "LEFT", "ROTATE", "ROTATE", "ROTATE", "RIGHT",

@@ -36,10 +36,17 @@ class PathSearcher:
         print("In calculate path")
 
         for col in range(game.grid.num_cols):
-            print("In column traverser")
+            # print("In column traverser")
             block = game.current_block.copy()  # Create a copy of the current block
             rotations = block.number_of_rotations  # Get the number of rotations for the current block
-            print("Block is " + block.name + " rotations " + str(rotations))
+            # print("Block is " + block.name + " rotations " + str(rotations))
+
+            old_height_of_path = current_grid.calculate_height()
+            old_lines_cleared_of_path = 1
+            old_holes_of_path = current_grid.calculate_holes()
+            old_blockades_of_path = current_grid.calculate_blockades()
+            print("old")
+            print(old_height_of_path, old_lines_cleared_of_path, old_holes_of_path)
 
             for rotation in range(rotations):  # Iterate over the number of rotations
                 block.rotate()  # Rotate the block to the current rotation
@@ -63,13 +70,22 @@ class PathSearcher:
                         path.set_moves(moves)  # Set the recorded moves as the move sequence
 
                         # Example calculations for weights
-                        height_of_path = 1
-                        lines_cleared_of_path = 1
-                        holes_of_path = 1
-                        blockades_of_path = 1
+
+                        new_height_of_path = current_grid.calculate_height()
+                        new_lines_cleared_of_path = 1
+                        new_holes_of_path = current_grid.calculate_holes()
+                        new_blockades_of_path = current_grid.calculate_blockades()
+
+                        print("new")
+                        print(new_height_of_path, new_lines_cleared_of_path, new_holes_of_path)
+
+                        height_of_path = old_height_of_path - new_height_of_path
+                        lines_cleared_of_path = 0
+                        holes_of_path = old_holes_of_path - new_holes_of_path
+                        blockades_of_path = old_blockades_of_path - new_blockades_of_path
 
                         # Set the calculated values
-                        path.set_weights(height_of_path, lines_cleared_of_path, holes_of_path, blockades_of_path)
+                        path.set_attributes(height_of_path, lines_cleared_of_path, holes_of_path, blockades_of_path)
 
                         # Calculate move rank based on the current path
                         rank = self.calculate_move_rank(path)
@@ -77,7 +93,7 @@ class PathSearcher:
                         # Set the rank to the path
                         path.set_rank(rank)
                         path.set_game_over_move(False)  # Example game over move
-                        print(f"Path generated: {moves}")  # Print the generated path
+                        # print(f"Path generated: {moves}")  # Print the generated path
                         self.paths.append(path)
 
         return self.paths
