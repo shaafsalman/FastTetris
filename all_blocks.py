@@ -41,7 +41,7 @@ class IBlock(Block):
         }
         self.name = "I"
         self.num_rotations = 4
-        self.move(-1, 3)
+        self.move(-1, 0)
 
 
 class OBlock(Block):
@@ -66,7 +66,7 @@ class SBlock(Block):
         }
         self.name = "S"
         self.num_rotations = 4
-        self.move(0, 3)
+        self.move(0, 0)
 
 
 class TBlock(Block):
@@ -80,7 +80,7 @@ class TBlock(Block):
         }
         self.name = "T"
         self.num_rotations = 4
-        self.move(0, 3)
+        self.move(0, 0)
 
 
 class ZBlock(Block):
@@ -94,4 +94,4 @@ class ZBlock(Block):
         }
         self.name = "Z"
         self.num_rotations = 4
-        self.move(0, 3)
+        self.move(0, 0)
