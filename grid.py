@@ -72,6 +72,18 @@ class Grid:
                     blockades += 1
         return blockades
 
+    def copy(self):
+        copied_grid = Grid()
+        copied_grid.num_rows = self.num_rows
+        copied_grid.num_cols = self.num_cols
+        copied_grid.cell_size = self.cell_size
+        copied_grid.colors = self.colors
+
+        # Copy the values from the original grid to the new grid
+        copied_grid.grid = [row[:] for row in self.grid]
+
+        return copied_grid
+
     def draw(self, screen):
         for row in range(self.num_rows):
             for column in range(self.num_cols):
@@ -79,3 +91,15 @@ class Grid:
                 cell_rect = pygame.Rect(column * self.cell_size + 11, row * self.cell_size + 11,
                                         self.cell_size - 1, self.cell_size - 1)
                 pygame.draw.rect(screen, self.colors[cell_value], cell_rect)
+
+    def can_place_block(self, block, row, col):
+        """
+        Checks if the given block can be placed at the specified row and column in the grid.
+        Returns True if the block can be placed, False otherwise.
+        """
+        for position in block.get_cell_positions():
+            if not self.is_inside(row + position.row, col + position.column):
+                return False
+            if not self.is_empty(row + position.row, col + position.column):
+                return False
+        return True

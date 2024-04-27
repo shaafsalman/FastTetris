@@ -11,6 +11,8 @@ class LBlock(Block):
             2: [Position(1, 0), Position(1, 1), Position(1, 2), Position(2, 0)],
             3: [Position(0, 0), Position(0, 1), Position(1, 1), Position(2, 1)]
         }
+        self.name = "L"
+        self.num_rotations = 4
         self.move(0, 3)
 
 
@@ -23,6 +25,8 @@ class JBlock(Block):
             2: [Position(1, 0), Position(1, 1), Position(1, 2), Position(2, 2)],
             3: [Position(0, 1), Position(1, 1), Position(2, 0), Position(2, 1)]
         }
+        self.name = "J"
+        self.num_rotations = 4
         self.move(0, 3)
 
 
@@ -35,6 +39,8 @@ class IBlock(Block):
             2: [Position(2, 0), Position(2, 1), Position(2, 2), Position(2, 3)],
             3: [Position(0, 1), Position(1, 1), Position(2, 1), Position(3, 1)]
         }
+        self.name = "I"
+        self.num_rotations = 4
         self.move(-1, 3)
 
 
@@ -44,6 +50,8 @@ class OBlock(Block):
         self.cells = {
             0: [Position(0, 0), Position(0, 1), Position(1, 0), Position(1, 1)]
         }
+        self.name = "O"
+        self.num_rotations = 4
         self.move(0, 4)
 
 
@@ -56,6 +64,8 @@ class SBlock(Block):
             2: [Position(1, 1), Position(1, 2), Position(2, 0), Position(2, 1)],
             3: [Position(0, 0), Position(1, 0), Position(1, 1), Position(2, 1)]
         }
+        self.name = "S"
+        self.num_rotations = 4
         self.move(0, 3)
 
 
@@ -68,6 +78,8 @@ class TBlock(Block):
             2: [Position(1, 0), Position(1, 1), Position(1, 2), Position(2, 1)],
             3: [Position(0, 1), Position(1, 0), Position(1, 1), Position(2, 1)]
         }
+        self.name = "T"
+        self.num_rotations = 4
         self.move(0, 3)
 
 
@@ -80,4 +92,6 @@ class ZBlock(Block):
             2: [Position(1, 0), Position(1, 1), Position(2, 1), Position(2, 2)],
             3: [Position(0, 1), Position(1, 0), Position(1, 1), Position(2, 0)]
         }
+        self.name = "Z"
+        self.num_rotations = 4
         self.move(0, 3)

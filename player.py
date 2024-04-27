@@ -14,32 +14,26 @@ class Player:
         self.grid = None
         self.game = None
 
-    def calculate_move_rank(self, height, lines_cleared, holes, blockades):
-        move_rank = (
-                self.height_weight * height +
-                self.lines_cleared_weight * lines_cleared +
-                self.holes_weight * holes +
-                self.blockades_weight * blockades
-        )
-        return move_rank
-
     def get_path(self, game):
         # Set the grid, current_block, and next_block in self
         self.game = game
         searcher = PathSearcher()
-        self.All_Possible_Paths = searcher.calculate_paths(game)
+        self.All_Possible_Paths = searcher.calculate_paths(game, self.height_weight, self.lines_cleared_weight,
+                                                           self.holes_weight, self.blockades_weight)
 
-        # Generate a single optimal path for testing
-        optimal_path = ["LEFT", "LEFT", "LEFT", "LEFT", "LEFT", "LEFT", "LEFT", "ROTATE", "ROTATE", "ROTATE", "RIGHT",
-                        "DOWN", "LEFT", "RIGHT",
-                        "DOWN", "DOWN", "DOWN", "DOWN", "DOWN", "LEFT", "RIGHT", "DOWN"]
+        optimal_path = self.choose_optimal_path()
+
+        # # Generate a single optimal path for testing
+        # optimal_path = ["LEFT", "LEFT", "LEFT", "LEFT", "LEFT", "LEFT", "LEFT", "ROTATE", "ROTATE", "ROTATE", "RIGHT",
+        #                 "DOWN", "LEFT", "RIGHT",
+        #                 "DOWN", "DOWN", "DOWN", "DOWN", "DOWN", "LEFT", "RIGHT", "DOWN"]
 
         return optimal_path
 
-    def calculate_all_possible_paths(self, current_shape, grid):
-        # Implement to calculate all possible paths for the current shape
-        pass
-
     def choose_optimal_path(self):
-        # Implement to choose the most optimal path from All_Possible_Paths
-        pass
+        if not self.All_Possible_Paths:
+            return None  # Return None if there are no paths calculated
+
+        # Find the path with the maximum rank using the max function
+        optimal_path = max(self.All_Possible_Paths, key=lambda path: path.rank)
+        return optimal_path
