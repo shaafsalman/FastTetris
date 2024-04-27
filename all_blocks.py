@@ -14,8 +14,6 @@ class LBlock(Block):
         self.move(0, 3)
 
 
-
-
 class JBlock(Block):
     def __init__(self):
         super().__init__(id=2)

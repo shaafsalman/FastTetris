@@ -38,7 +38,7 @@ class GA(renderer):
 
     def play_game(self, current_player):
         # Get the moves from the current player
-        moves = current_player.getPath(self.game)
+        moves = current_player.get_path(self.game)
         #     # moves = current_player.getPath(self.game.grid, self.game.current_block, self.game.next_block)
 
         # Iterate through each move

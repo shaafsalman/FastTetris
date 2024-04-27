@@ -1,3 +1,6 @@
+from pathSearcher import PathSearcher
+
+
 class Player:
     def __init__(self, height_weight, lines_cleared_weight, holes_weight, blockades_weight):
         self.height_weight = height_weight
@@ -20,26 +23,18 @@ class Player:
         )
         return move_rank
 
-    def getPath(self, game):
+    def get_path(self, game):
         # Set the grid, current_block, and next_block in self
         self.game = game
+        searcher = PathSearcher()
+        self.All_Possible_Paths = searcher.calculate_paths(game)
+
         # Generate a single optimal path for testing
         optimal_path = ["LEFT", "LEFT", "LEFT", "LEFT", "LEFT", "LEFT", "LEFT", "ROTATE", "ROTATE", "ROTATE", "RIGHT",
                         "DOWN", "LEFT", "RIGHT",
                         "DOWN", "DOWN", "DOWN", "DOWN", "DOWN", "LEFT", "RIGHT", "DOWN"]
 
         return optimal_path
-
-    # def getPath(self, grid, current_block, next_block):
-    #     # Set the grid, current_block, and next_block in self
-    #     self.grid = grid
-    #     self.current_block = current_block
-    #     self.next_block = next_block
-    #
-    #     # Generate a single optimal path for testing
-    #     optimal_path = ["LEFT", "RIGHT", "DOWN", "LEFT", "RIGHT", "DOWN","LEFT", "RIGHT", "DOWN"]
-    #
-    #     return optimal_path
 
     def calculate_all_possible_paths(self, current_shape, grid):
         # Implement to calculate all possible paths for the current shape

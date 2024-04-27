@@ -41,3 +41,16 @@ class Block:
             tile_rect = pygame.Rect(offset_x + tile.column * self.cell_size,
                                     offset_y + tile.row * self.cell_size, self.cell_size - 1, self.cell_size - 1)
             pygame.draw.rect(screen, self.colors[self.id], tile_rect)
+
+    def copy(self):
+        copied_block = Block(self.id)
+        copied_block.cells = self.cells.copy()
+        copied_block.cell_size = self.cell_size
+        copied_block.row_offset = self.row_offset
+        copied_block.column_offset = self.column_offset
+        copied_block.rotation_state = self.rotation_state
+        copied_block.colors = self.colors
+        return copied_block
+
+    def num_rotations(self):
+        pass
