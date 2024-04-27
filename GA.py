@@ -40,36 +40,39 @@ class GA(Renderer):
         # Get the moves from the current player
         path = current_player.get_path(self.game)
         moves = path.moves
-        #     # moves = current_player.getPath(self.game.grid, self.game.current_block, self.game.next_block)
+        is_alive = True
 
         # Iterate through each move
-        for move in moves:
-            # print(move)
-            if self.game.game_over:
-                self.game.game_over = False
-                self.game.reset()
-                if self.game.score > self.highest_score:
-                    self.highest_score = self.game.score
+        while is_alive:
 
-            # Execute the move
-            if move == "LEFT":
-                self.game.move_left()
-            elif move == "RIGHT":
-                self.game.move_right()
-            elif move == "DOWN":
-                self.game.move_down()
-                self.game.update_score(0, 1)
-            elif move == "ROTATE":
-                self.game.rotate()
+            for move in moves:
+                # print(move)
+                if self.game.game_over:
+                    self.game.game_over = False
+                    self.game.reset()
+                    if self.game.score > self.highest_score:
+                        self.highest_score = self.game.score
 
-            # Render the game state after each move
-            self.render(self.game, current_player, self.highest_score, "AI")
+                # Execute the move
+                if move == "LEFT":
+                    self.game.move_left()
+                elif move == "RIGHT":
+                    self.game.move_right()
+                elif move == "DOWN":
+                    self.game.move_down()
+                    self.game.update_score(0, 1)
+                elif move == "ROTATE":
+                    self.game.rotate()
 
-            pygame.time.delay(int(1000 / 5))
+                # Render the game state after each move
+                self.render(self.game, current_player, self.highest_score, "AI")
 
-            # Check for any events during the delay
-            if self.handle_events():
-                break
+                pygame.time.delay(int(1000 / 50))
+                if path.game_over_move or self.game.game_over:
+                    is_alive = False
+                # Check for any events during the delay
+                if self.handle_events():
+                    break
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -103,4 +106,5 @@ class GA(Renderer):
 
 if __name__ == "__main__":
     ga = GA(population_size=10, mutation_rate=0.1, crossover_rate=0.5)
+    ga.game.turn_off_music()
     ga.run(num_generations=10)

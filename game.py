@@ -122,6 +122,10 @@ class Game:
                 return False
         return True
 
+    def turn_off_music(self):
+        """Turns off all music."""
+        pygame.mixer.music.stop()
+
     def draw(self, screen):
         self.grid.draw(screen)
         self.current_block.draw(screen, 11, 11)

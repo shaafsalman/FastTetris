@@ -92,6 +92,8 @@ class Grid:
             for column in range(self.num_cols):
                 self.grid[row][column] = 0
 
+    def is_grid_full(self):
+        return self.calculate_height() >= self.num_rows
 
     def copy(self):
         copied_grid = Grid()

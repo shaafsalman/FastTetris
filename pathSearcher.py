@@ -92,7 +92,7 @@ class PathSearcher:
 
                         # Set the rank to the path
                         path.set_rank(rank)
-                        path.set_game_over_move(False)  # Example game over move
+                        path.set_game_over_move(current_grid.is_grid_full())
                         # print(f"Path generated: {moves}")  # Print the generated path
                         self.paths.append(path)
 
