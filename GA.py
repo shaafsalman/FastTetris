@@ -22,7 +22,7 @@ class GA(Renderer):
 
         self.GAME_UPDATE = pygame.USEREVENT
         self.highest_score = self.game.highest_score
-        pygame.time.set_timer(self.GAME_UPDATE, 200)
+        pygame.time.set_timer(self.GAME_UPDATE, 60)
 
     def initialize_population(self):
         # Initialize the population with random players
@@ -45,9 +45,6 @@ class GA(Renderer):
     def run(self):
         self.initialize_population()
         for generation in range(GAConfig.num_generations):
-            if self.handle_events():
-                break
-
             print(f"Generation {generation + 1}")
             self.play_generation(generation + 1)
             self.evolve_population()
@@ -57,18 +54,39 @@ class GA(Renderer):
             self.clock.tick(2000)
 
     def play_game(self, current_player):
-        # Get the moves from the current player
-        self.game.grid.print_grid()
+        # Initialize variables
         is_alive = True
+        is_paused = False
 
-        # Iterate through each move
+        # Main game loop
         while is_alive:
+            # Check for events and handle pause
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        is_paused = not is_paused  # Toggle pause state on space press
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    mouse_pos = pygame.mouse.get_pos()
+                    if self.back_rect.collidepoint(mouse_pos):
+                        return  # Exit the game loop
+
+            # Pause game if needed
+            if is_paused:
+                continue
+
+            # Get the current grid state
             current_grid = self.game.grid.copy()
-            path = current_player.get_path(self.game,current_grid)
+
+            # Get the path from the current player
+            path = current_player.get_path(self.game, current_grid)
             moves = path.moves
 
+            # Execute each move in the path
             for move in moves:
-                # print(move)
+                # Check for game over
                 if self.game.game_over:
                     self.game.game_over = False
                     self.game.reset()
@@ -89,15 +107,16 @@ class GA(Renderer):
                 # Render the game state after each move
                 self.render(self.game, current_player, self.highest_score, "AI")
 
+                # Delay for smooth rendering
                 pygame.time.delay(int(1000 / 50))
+
+                # Check for game over
                 if path.game_over_move or self.game.game_over:
                     is_alive = False
                     current_player.score = self.game.score
-                # Check for any events during the delay
-                if self.handle_events():
                     break
 
-    def handle_events(self):
+    def handle_events(self, is_paused):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -105,9 +124,9 @@ class GA(Renderer):
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = pygame.mouse.get_pos()
                 if self.back_rect.collidepoint(mouse_pos):
-                    return True
+                    return True  # Exit the game loop
 
-        return False  # No Back button click
+        return False
 
     def play_generation(self, generation_number):
         """Play games for all players in the current generation."""

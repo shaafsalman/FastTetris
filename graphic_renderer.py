@@ -34,7 +34,7 @@ class Renderer:
         self.back_x = self.high_score_x + 200
         self.current_shape_x = 320
         self.next_x = 620
-        self.generation_x = 320
+        self.generation_x = 720
         self.agent_x = 620
         self.player_weights_x = 320
 

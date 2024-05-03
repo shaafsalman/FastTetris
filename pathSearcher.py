@@ -12,10 +12,14 @@ class PathSearcher:
 
     def calculate_move_rank(self, path):
         move_rank = (
-                self.height_weight * path.height +
-                self.lines_cleared_weight * path.lines_cleared +
-                self.holes_weight * path.holes +
-                self.blockades_weight * path.blockades
+                # self.height_weight * path.height +
+                # self.lines_cleared_weight * path.lines_cleared +
+                # self.holes_weight * path.holes +
+                # self.blockades_weight * path.blockades
+
+            self.height_weight * path.height +
+            self.lines_cleared_weight * path.lines_cleared +
+            self.holes_weight * path.holes
         )
         return move_rank
 
@@ -48,7 +52,7 @@ class PathSearcher:
 
     def calculate_block_moves(self, grid, col):
         moves = []
-        moves.append("Rotate")
+        moves.append("ROTATE")
         moves.extend(["RIGHT"] * col)
         moves.extend(["DOWN"] * grid.num_rows)
         #
