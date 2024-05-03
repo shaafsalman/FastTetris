@@ -32,52 +32,58 @@ class PathSearcher:
         self.set_weights(player_height_weight, player_lines_cleared_weight, player_holes_weight,
                          player_blockades_weight)
 
-        for col in range(game.grid.num_cols):
-            current_grid = grid.copy()
-            block = game.current_block.copy()
-            moves = self.calculate_block_moves(game, current_grid, block, col)
-            path = self.create_path(moves, current_grid)
-            self.paths.append(path)
+        for rotation in range(4):
+            for col in range(game.grid.num_cols):
+                print ("the col is---------------------")
+                print(col)
+                current_grid = grid.copy()
+                game_copy = game.copy()
+                block = game.current_block.copy()
+                moves = self.calculate_block_moves(current_grid, col)
+                holes, blockades, full_rows, max_height = game_copy.apply_moves_to_grid(moves)
+                path = self.create_path(moves, holes, blockades, full_rows, max_height)
+                self.paths.append(path)
 
         return self.paths
 
-    def calculate_block_moves(self, game, grid, block, col):
+    def calculate_block_moves(self, grid, col):
         moves = []
-        rotations = block.number_of_rotations
-        for rotation in range(rotations):
-            block.rotate()
-            if col + block.width <= game.grid.num_cols:
-                row = 0
-                while grid.can_place_block(block, row, col):
-                    moves.append("DOWN")
-                    row += 1
-
-                if row > 0:
-                    for _ in range(col):
-                        moves.append("LEFT")
-                    moves.append("ROTATE")
-                    for _ in range(grid.num_rows - row):
-                        moves.append("UP")
-                    for _ in range(col, game.grid.num_cols - block.width):
-                        moves.append("RIGHT")
+        moves.append("Rotate")
+        moves.extend(["RIGHT"] * col)
+        moves.extend(["DOWN"] * grid.num_rows)
+        #
+        # rotations = block.number_of_rotations
+        # for rotation in range(rotations):
+        #     block.rotate()
+        #     if col + block.width <= game.grid.num_cols:
+        #         row = 0
+        #         while grid.can_place_block(block, row, col):
+        #             moves.append("DOWN")
+        #             row += 1
+        #
+        #         if row > 0:
+        #             for _ in range(col):
+        #                 moves.append("LEFT")
+        #             moves.append("ROTATE")
+        #             for _ in range(grid.num_rows - row):
+        #                 moves.append("UP")
+        #             for _ in range(col, game.grid.num_cols - block.width):
+        #                 moves.append("RIGHT")
         return moves
 
-    def create_path(self, moves, grid):
+    def create_path(self, moves, holes, blockades, full_rows, max_height):
         path = Path()
         path.set_moves(moves)
 
-        height_of_path = grid.calculate_height()
-        lines_cleared_of_path = 0
-        holes_of_path = grid.calculate_holes()
-        blockades_of_path = grid.calculate_blockades()
+        height_of_path = max_height
+        lines_cleared_of_path = full_rows
+        holes_of_path = holes
+        blockades_of_path = blockades
 
         path.set_attributes(height_of_path, lines_cleared_of_path, holes_of_path, blockades_of_path)
 
         rank = self.calculate_move_rank(path)
         path.set_rank(rank)
-        path.set_game_over_move(grid.is_grid_full())
+        # path.set_game_over_move(grid.is_grid_full())
 
         return path
-
-
-

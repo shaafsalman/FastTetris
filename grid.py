@@ -115,14 +115,3 @@ class Grid:
                                         self.cell_size - 1, self.cell_size - 1)
                 pygame.draw.rect(screen, self.colors[cell_value], cell_rect)
 
-    def can_place_block(self, block, row, col):
-        """
-        Checks if the given block can be placed at the specified row and column in the grid.
-        Returns True if the block can be placed, False otherwise.
-        """
-        for position in block.get_cell_positions():
-            if not self.is_inside(row + position.row, col + position.column):
-                return False
-            if not self.is_empty(row + position.row, col + position.column):
-                return False
-        return True

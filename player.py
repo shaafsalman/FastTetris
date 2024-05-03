@@ -1,5 +1,5 @@
 from pathSearcher import PathSearcher
-
+import time
 
 class Player:
     def __init__(self, height_weight, lines_cleared_weight, holes_weight, blockades_weight):
@@ -23,11 +23,12 @@ class Player:
         self.All_Possible_Paths = searcher.calculate_paths(game, current_grid, self.height_weight, self.lines_cleared_weight,
                                                            self.holes_weight, self.blockades_weight)
 
-        print("nUMBER of mOVES")
+        print("Number OF Moves")
         print(str(self.All_Possible_Paths.__len__()))
+
         # game.grid.print_grid()
         optimal_path = self.choose_optimal_path()
-        optimal_path.print_details()
+        # optimal_path.print_details()
 
         # # Generate a single optimal path for testing
         # optimal_path = ["LEFT", "LEFT", "LEFT", "LEFT", "LEFT", "LEFT", "LEFT", "ROTATE", "ROTATE", "ROTATE", "RIGHT",
@@ -38,8 +39,16 @@ class Player:
 
     def choose_optimal_path(self):
         if not self.All_Possible_Paths:
-            return None  # Return None if there are no paths calculated
+            return None
+
+        for path in self.All_Possible_Paths:
+            path.print_details()
+
 
         # Find the path with the maximum rank using the max function
         optimal_path = max(self.All_Possible_Paths, key=lambda path: path.rank)
+        print("optimal Path iss-----------------")
+        optimal_path.print_details()
+
+        # time.sleep(10)
         return optimal_path

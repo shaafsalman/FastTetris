@@ -4,6 +4,8 @@ from grid import Grid
 from all_blocks import *
 import random
 import pygame
+from path import Path
+import time
 
 
 def load_highest_score():
@@ -79,6 +81,7 @@ class Game:
         if self.block_inside() == False or self.block_fits() == False:
             self.current_block.move(-1, 0)
             self.lock_block()
+            return True
 
     def lock_block(self):
         # print("Lock Block Called")
@@ -139,3 +142,123 @@ class Game:
             self.next_block.draw(screen, 255, 280)
         else:
             self.next_block.draw(screen, 270, 270)
+
+    def check_collision(self):
+        """
+        Checks if the current block collides with any existing blocks in the grid.
+        """
+        tiles = self.current_block.get_cell_positions()
+        for tile in tiles:
+            if not self.grid.is_empty(tile.row, tile.column):
+                return True
+        return False
+
+    def block_at_bottom(self):
+        """
+        Checks if the current block is at the bottom of the grid.
+        """
+        tiles = self.current_block.get_cell_positions()
+        for tile in tiles:
+            if tile.row == self.grid.num_rows - 1:
+                return True
+        return False
+
+    def calculate_holes(self, grid):
+        """
+        Calculates the number of holes in the grid.
+        """
+        holes = 0
+        for col in range(grid.num_cols):
+            for row in range(grid.num_rows - 1):
+                if grid.is_empty(row, col) and not grid.is_empty(row + 1, col):
+                    holes += 1
+        return holes
+
+    def calculate_blockades(self, grid):
+        """
+        Calculates the number of blockades in the grid.
+        """
+        blockades = 0
+        for col in range(grid.num_cols):
+            for row in range(grid.num_rows - 1):
+                if not grid.is_empty(row, col) and grid.is_empty(row + 1, col):
+                    blockades += 1
+        return blockades
+
+    def clear_full_rows(self, grid):
+        """
+        Clears full rows in the grid and returns the number of rows cleared.
+        """
+        completed = 0
+        for row in range(grid.num_rows - 1, 0, -1):
+            if grid.is_row_full(row):
+                grid.clear_row(row)
+                completed += 1
+            elif completed > 0:
+                grid.move_row_down(row, completed)
+        return completed
+
+    def calculate_height(self, grid):
+        """
+        Calculates the height of the highest column in the grid.
+        """
+        heights = [0] * grid.num_cols
+        for col in range(grid.num_cols):
+            for row in range(grid.num_rows):
+                if not grid.is_empty(row, col):
+                    heights[col] = grid.num_rows - row
+                    break
+        return max(heights)
+
+    def copy(self):
+        copied_game = Game()
+        copied_game.grid = self.grid.copy()
+        copied_game.blocks = [block.copy() for block in self.blocks]
+        copied_game.current_block = self.current_block.copy()
+        copied_game.next_block = self.next_block.copy()
+        copied_game.game_over = self.game_over
+        copied_game.score = self.score
+        copied_game.lines = self.lines
+        copied_game.highest_score = self.highest_score
+
+        return copied_game
+
+    def apply_moves_to_grid(self, path):
+        holes = 0
+        blockades = 0
+        full_rows = 0
+        max_height = 0
+        print("checking move")
+        print(path)
+        self.current_block.print_details()
+
+        self.grid.print_grid()
+
+        attached = False
+
+        # grid_copy = self.grid.copy()
+
+        for move in path:
+            if move == "ROTATE":
+                self.rotate()
+            elif move == "LEFT":
+                self.move_left()
+            elif move == "RIGHT":
+                self.move_right()
+            elif move == "DOWN":
+                attached =self.move_down()
+
+            if self.check_collision() or self.block_at_bottom() or attached :
+                print("Final Grid")
+                self.grid.print_grid()
+                # If collision or block at bottom, lock the block and update grid stats
+                self.lock_block()
+                holes = self.calculate_holes(self.grid)
+                blockades = self.calculate_blockades(self.grid)
+                full_rows = self.clear_full_rows(self.grid)
+                max_height = self.calculate_height(self.grid)
+                print("max height", max_height)
+                print("Holes", holes)
+                break
+        # time.sleep(2)
+        return holes, blockades, full_rows, max_height
