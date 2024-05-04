@@ -38,6 +38,8 @@ class Game:
         self.lines = 0
         self.highest_score = load_highest_score()
 
+        self.lines_cleared = 0
+
         self.rotate_sound = pygame.mixer.Sound("Sounds/rotate.ogg")
         self.clear_sound = pygame.mixer.Sound("Sounds/clear.ogg")
 
@@ -95,9 +97,11 @@ class Game:
         if rows_cleared > 0:
             self.clear_sound.play()
             self.update_score(rows_cleared, 0)
+            self.lines_cleared += rows_cleared
             self.update_numer_of_lines(rows_cleared)
-        if self.block_fits() == False:
+        if not self.block_fits():
             self.game_over = True
+        return rows_cleared
 
     def reset(self):
         self.grid.reset()
@@ -205,6 +209,19 @@ class Game:
 
         return minor_holes, major_holes, absolute_holes
 
+    def count_complete_rows(self, grid):
+        """
+        Counts the number of complete rows in the grid.
+        """
+        complete_rows = 0
+
+        for row in range(grid.num_rows):
+            is_complete = all(grid[row][col] != 0 for col in range(grid.num_cols))
+            if is_complete:
+                complete_rows += 1
+
+        return complete_rows
+
     def calculate_blockades(self, grid):
         """
         Calculates the number of blockades in the grid.
@@ -215,19 +232,6 @@ class Game:
                 if not grid.is_empty(row, col) and grid.is_empty(row + 1, col):
                     blockades += 1
         return blockades
-
-    def clear_full_rows(self, grid):
-        """
-        Clears full rows in the grid and returns the number of rows cleared.
-        """
-        completed = 0
-        for row in range(grid.num_rows - 1, 0, -1):
-            if grid.is_row_full(row):
-                grid.clear_row(row)
-                completed += 1
-            elif completed > 0:
-                grid.move_row_down(row, completed)
-        return completed
 
     def calculate_height(self, grid):
         """
@@ -259,6 +263,9 @@ class Game:
         blockades = 0
         full_rows = 0
         max_height = 0
+        minor_holes = 0
+        major_holes = 0
+        absolute_holes = 0
         print("checking move before grid:")
         print(path)
         self.current_block.print_details()
@@ -277,15 +284,20 @@ class Game:
             elif move == "RIGHT":
                 self.move_right()
             elif move == "DOWN":
-                attached = self.move_down()
+                # attached = self.move_down()
+                self.current_block.move(1, 0)
+                if self.block_inside() == False or self.block_fits() == False:
+                    attached = True
+                    self.current_block.move(-1, 0)
+                    full_rows = self.lock_block()
 
             if self.check_collision() or self.block_at_bottom() or attached:
                 print("Final Grid")
                 self.grid.print_grid()
                 self.lock_block()
-                holes = self.calculate_holes(self.grid)
+                # holes = self.calculate_holes(self.grid)
                 blockades = self.calculate_blockades(self.grid)
-                full_rows = self.clear_full_rows(self.grid)
+                full_rows = self.lines_cleared
                 max_height = self.calculate_height(self.grid)
 
                 minor_holes, major_holes, absolute_holes = self.calculate_all_holes(self.grid)
@@ -294,9 +306,10 @@ class Game:
                 print(minor_holes, ",", major_holes, ",", absolute_holes)
 
                 print("max height", max_height)
-                print("Holes", holes)
+                print("Holes", absolute_holes)
                 print("Full Lines", full_rows)
                 print("Blockades", blockades)
                 break
         # time.sleep(2)
-        return absolute_holes, blockades, full_rows, max_height
+        total_holes = minor_holes + 2 * major_holes * 4 * absolute_holes
+        return total_holes, blockades, full_rows, max_height

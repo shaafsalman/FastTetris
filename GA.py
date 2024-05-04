@@ -116,7 +116,7 @@ class GA(Renderer):
                 self.render(self.game, current_player, self.highest_score, "AI")
 
                 # Delay for smooth rendering
-                pygame.time.delay(int(5000 / 50))
+                pygame.time.delay(int(1000 / 50))
 
                 # Check for game over
                 if path.game_over_move or self.game.game_over:

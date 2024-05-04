@@ -51,7 +51,7 @@ class OBlock(Block):
             0: [Position(0, 0), Position(0, 1), Position(1, 0), Position(1, 1)]
         }
         self.name = "O"
-        self.num_rotations = 4
+        self.num_rotations = 1
         self.move(0, 4)
 
 

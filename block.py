@@ -18,7 +18,7 @@ class Block:
     def move(self, rows, columns):
         self.row_offset += rows
         self.column_offset += columns
-        self.number_of_rotations = 4
+        self.number_of_rotations = self.cells.__len__()
 
     def get_cell_positions(self):
         tiles = self.cells[self.rotation_state]

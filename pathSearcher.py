@@ -52,7 +52,7 @@ class PathSearcher:
 
     def calculate_block_moves(self, grid, col, rotation):
         moves = []
-        moves.extend(["ROTATE"]* rotation)
+        moves.extend(["ROTATE"] * rotation)
         moves.extend(["RIGHT"] * col)
         moves.extend(["DOWN"] * grid.num_rows)
 
