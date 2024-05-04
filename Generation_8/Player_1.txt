@@ -1,0 +1,7 @@
+Player Number: 1
+Generation Number: 8
+Height Weight: -0.09286759574651415
+Lines Cleared Weight: 0.6710367550074494
+Holes Weight: -0.9001581825690583
+Blockades Weight: -0.5348911190969536
+Score: 757

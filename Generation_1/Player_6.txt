@@ -1,0 +1,7 @@
+Player Number: 6
+Generation Number: 1
+Height Weight: -0.7256883912997676
+Lines Cleared Weight: 12.405738590103589
+Holes Weight: -12.710547324709644
+Blockades Weight: -13.285010477856416
+Score: 399

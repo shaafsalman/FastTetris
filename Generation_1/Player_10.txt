@@ -1,0 +1,7 @@
+Player Number: 10
+Generation Number: 1
+Height Weight: -7.134841130499231
+Lines Cleared Weight: 10.678703525320625
+Holes Weight: -3.01161102354445
+Blockades Weight: -7.462467643824868
+Score: 267
