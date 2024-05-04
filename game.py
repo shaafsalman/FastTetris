@@ -174,6 +174,37 @@ class Game:
                     holes += 1
         return holes
 
+    def calculate_all_holes(self, grid):
+        """
+        Calculates the number of minor, major, and absolute holes in the grid.
+        """
+        minor_holes = 0
+        major_holes = 0
+        absolute_holes = 0
+
+        for col in range(grid.num_cols):
+            topmost_filled_row = None
+            for row in range(grid.num_rows):
+                if not grid.is_empty(row, col):
+                    topmost_filled_row = row
+                    break
+
+            if topmost_filled_row is not None:
+                for row in range(topmost_filled_row):
+                    if grid.is_empty(row, col):
+                        if col == 0 or not grid.is_empty(row, col - 1):
+                            minor_holes += 1
+
+                for row in range(topmost_filled_row + 1, grid.num_rows):
+                    if grid.is_empty(row, col):
+                        if col == 0 or not grid.is_empty(row, col - 1):
+                            absolute_holes += 1
+
+                if topmost_filled_row < grid.num_rows - 1 and grid.is_empty(topmost_filled_row + 1, col):
+                    major_holes += 1
+
+        return minor_holes, major_holes, absolute_holes
+
     def calculate_blockades(self, grid):
         """
         Calculates the number of blockades in the grid.
@@ -228,7 +259,7 @@ class Game:
         blockades = 0
         full_rows = 0
         max_height = 0
-        print("checking move")
+        print("checking move before grid:")
         print(path)
         self.current_block.print_details()
 
@@ -246,19 +277,26 @@ class Game:
             elif move == "RIGHT":
                 self.move_right()
             elif move == "DOWN":
-                attached =self.move_down()
+                attached = self.move_down()
 
-            if self.check_collision() or self.block_at_bottom() or attached :
+            if self.check_collision() or self.block_at_bottom() or attached:
                 print("Final Grid")
                 self.grid.print_grid()
-                # If collision or block at bottom, lock the block and update grid stats
                 self.lock_block()
                 holes = self.calculate_holes(self.grid)
                 blockades = self.calculate_blockades(self.grid)
                 full_rows = self.clear_full_rows(self.grid)
                 max_height = self.calculate_height(self.grid)
+
+                minor_holes, major_holes, absolute_holes = self.calculate_all_holes(self.grid)
+
+                print("minor_holes, major_holes, absolute_holes")
+                print(minor_holes, ",", major_holes, ",", absolute_holes)
+
                 print("max height", max_height)
                 print("Holes", holes)
+                print("Full Lines", full_rows)
+                print("Blockades", blockades)
                 break
         # time.sleep(2)
-        return holes, blockades, full_rows, max_height
+        return absolute_holes, blockades, full_rows, max_height

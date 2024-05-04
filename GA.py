@@ -8,6 +8,7 @@ from graphic_renderer import Renderer
 from player import Player
 from config import GAConfig
 import random
+from path import Path
 
 
 class GA(Renderer):
@@ -71,7 +72,7 @@ class GA(Renderer):
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     mouse_pos = pygame.mouse.get_pos()
                     if self.back_rect.collidepoint(mouse_pos):
-                        return  # Exit the game loop
+                        return
 
             # Pause game if needed
             if is_paused:
@@ -81,8 +82,15 @@ class GA(Renderer):
             current_grid = self.game.grid.copy()
 
             # Get the path from the current player
+            path = Path()
+
+
+            # Get the path from the current player
             path = current_player.get_path(self.game, current_grid)
             moves = path.moves
+            print("path----------------------------------")
+            path.print_details()
+            print("path----------------------------------")
 
             # Execute each move in the path
             for move in moves:
@@ -108,7 +116,7 @@ class GA(Renderer):
                 self.render(self.game, current_player, self.highest_score, "AI")
 
                 # Delay for smooth rendering
-                pygame.time.delay(int(1000 / 50))
+                pygame.time.delay(int(5000 / 50))
 
                 # Check for game over
                 if path.game_over_move or self.game.game_over:

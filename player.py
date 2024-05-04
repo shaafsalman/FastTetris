@@ -1,6 +1,7 @@
 from pathSearcher import PathSearcher
 import time
 
+
 class Player:
     def __init__(self, height_weight, lines_cleared_weight, holes_weight, blockades_weight):
         self.height_weight = height_weight
@@ -20,7 +21,8 @@ class Player:
         # Set the grid, current_block, and next_block in self
         self.game = game
         searcher = PathSearcher()
-        self.All_Possible_Paths = searcher.calculate_paths(game, current_grid, self.height_weight, self.lines_cleared_weight,
+        self.All_Possible_Paths = searcher.calculate_paths(game, current_grid, self.height_weight,
+                                                           self.lines_cleared_weight,
                                                            self.holes_weight, self.blockades_weight)
 
         print("Number OF Moves")
@@ -41,9 +43,9 @@ class Player:
         if not self.All_Possible_Paths:
             return None
 
+        print("All paths ------------------------------------------")
         for path in self.All_Possible_Paths:
             path.print_details()
-
 
         # Find the path with the maximum rank using the max function
         optimal_path = max(self.All_Possible_Paths, key=lambda path: path.rank)
