@@ -1,7 +1,0 @@
-Player Number: 5
-Generation Number: 5
-Height Weight: -0.03940468936343633
-Lines Cleared Weight: -0.3758748308423039
-Holes Weight: -0.5765335186718068
-Blockades Weight: 0.6224281596667884
-Score: 223
