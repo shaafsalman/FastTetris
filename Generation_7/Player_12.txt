@@ -1,7 +1,0 @@
-Player Number: 12
-Generation Number: 7
-Height Weight: -3.927749812662591
-Lines Cleared Weight: 2.4743283598787347
-Holes Weight: -2.003206060579336
-Blockades Weight: -4.859244361182899
-Score: 384
