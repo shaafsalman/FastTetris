@@ -1,7 +1,0 @@
-Player Number: 9
-Generation Number: 4
-Height Weight: -0.7882354900072305
-Lines Cleared Weight: 5.453772361023356
-Holes Weight: -3.3614190344018935
-Blockades Weight: -1.0779353800003335
-Score: 422

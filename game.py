@@ -1,11 +1,9 @@
 import os
 
-from grid import Grid
-from all_blocks import *
+from FastTetris.grid import Grid
+from FastTetris.all_blocks import *
 import random
 import pygame
-from path import Path
-import time
 
 
 def load_highest_score():

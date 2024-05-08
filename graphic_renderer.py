@@ -1,10 +1,9 @@
 import pygame
-from game import Game
-from colors import Colors
-
+from FastTetris.colors import Colors
 
 class Renderer:
     def __init__(self):
+        """Initialize the Renderer."""
         pygame.init()
         self.title_font = pygame.font.Font(None, 40)
         self.score_font = pygame.font.Font(None, 30)
@@ -15,7 +14,6 @@ class Renderer:
         self.lines_surface = self.title_font.render("Number of Lines", True, Colors.white)
         self.next_shape_surface = self.title_font.render("Next Shape", True, Colors.white)
         self.current_shape_surface = self.title_font.render("Current Shape", True, Colors.white)
-
         self.game_over_surface = self.title_font.render("GAME OVER", True, Colors.white)
         self.generation_surface = self.title_font.render("Generation:", True, Colors.white)
         self.agent_surface = self.title_font.render("Agent:", True, Colors.white)
@@ -61,6 +59,7 @@ class Renderer:
         self.player_weights_rect = pygame.Rect(self.player_weights_x, self.player_weights_y, 300, 40)
 
     def render(self, game, current_player, highest_score, agent_type):
+        """Render the game screen."""
         self.screen.fill(Colors.BACKGROUND_COLOR)
 
         self.render_score(game)
@@ -80,38 +79,46 @@ class Renderer:
         pygame.display.update()
 
     def render_score(self, game):
+        """Render the score."""
         self.screen.blit(self.score_surface, (self.score_x, self.score_y))
         score_value_surface = self.score_font.render(str(game.score), True, Colors.white)
         self.screen.blit(score_value_surface, (self.score_x, self.score_y + 35))
 
     def render_high_score(self, highest_score):
+        """Render the high score."""
         self.screen.blit(self.high_score_surface, (self.high_score_x, self.score_y))
         high_score_value_surface = self.score_font.render(str(highest_score), True, Colors.white)
         self.screen.blit(high_score_value_surface, (self.high_score_x, self.score_y + 35))
 
     def render_back_button(self):
+        """Render the back button."""
         back_color = Colors.light_blue
         pygame.draw.rect(self.screen, back_color, self.back_rect, border_radius=10)
         pygame.draw.rect(self.screen, Colors.dark_blue, self.back_rect, width=4, border_radius=10)
         self.screen.blit(self.back_surface, self.back_surface.get_rect(center=self.back_rect.center))
 
     def render_current_shape(self):
-        self.screen.blit(self.current_shape_surface, (self.current_shape_x, self.current_shape_y))
+        """Render the current shape."""
+        self.screen.blit(self.current_shape_surface, (self.current_shape_x + 6, self.current_shape_y))
 
     def render_next_shape(self):
+        """Render the next shape."""
         self.screen.blit(self.next_shape_surface, (self.next_x, self.current_shape_y))
 
     def render_generation_number(self, generation_number):
+        """Render the generation number."""
         self.screen.blit(self.generation_surface, (self.generation_x, self.generation_y))
         generation_value_surface = self.score_font.render(str(generation_number), True, Colors.white)
         self.screen.blit(generation_value_surface, (self.generation_x, self.generation_y + 35))
 
     def render_agent_type(self, agent_type):
+        """Render the agent type."""
         self.screen.blit(self.agent_surface, (self.agent_x, self.agent_y))
         agent_type_surface = self.score_font.render(agent_type, True, Colors.white)
         self.screen.blit(agent_type_surface, (self.agent_x, self.agent_y + 35))
 
     def render_player_weights(self, current_player):
+        """Render the player weights."""
         self.screen.blit(self.player_weights_surface, (self.player_weights_x, self.player_weights_y))
         player_details_text = f"Height: {current_player.height_weight:.2f}, " \
                               f"Lines Cleared: {current_player.lines_cleared_weight:.2f}, " \

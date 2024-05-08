@@ -1,9 +1,7 @@
 import pygame
-import sys
 
 from game import Game
-from colors import Colors
-from player import Player
+from FastTetris.colors import Colors
 
 
 class TetrisBase:
@@ -61,7 +59,7 @@ class TetrisBase:
             midtop=(next_shape_preview_position[0] + 100, next_shape_preview_position[1] + 290))
         self.screen.blit(self.agent_surface, agent_text_rect)
 
-        agent_type_surface = self.score_font.render(self.agent.agent_type, True, Colors.white)
+        agent_type_surface = self.score_font.render("Human", True, Colors.white)
         agent_type_rect = agent_type_surface.get_rect(
             midtop=(next_shape_preview_position[0] + 300, next_shape_preview_position[1] + 290))
         self.screen.blit(agent_type_surface, agent_type_rect)
