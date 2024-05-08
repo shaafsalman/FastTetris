@@ -67,9 +67,9 @@ class Player:
         if not self.All_Possible_Paths:
             return None
 
-        # print("All paths ------------------------------------------")
-        # for path in self.All_Possible_Paths:
-        #     path.print_details()
+        print("All paths ------------------------------------------")
+        for path in self.All_Possible_Paths:
+            path.print_details()
 
         # Find the path with the maximum rank using the max function
         optimal_path = max(self.All_Possible_Paths, key=lambda path: path.rank)

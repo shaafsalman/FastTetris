@@ -57,6 +57,13 @@ class GA(Renderer):
         self.highest_score = self.game.highest_score
         pygame.time.set_timer(self.GAME_UPDATE, 60)
 
+    def evolve_population(self):
+        """Evolve the population using mutation and crossover."""
+        self.population.sort(key=lambda x: x.score, reverse=True)
+        top_players = self.population[:2]
+        new_population = top_players + generate_random_players(5) + generate_crossover_players(5, top_players)
+        self.population = new_population
+
     def initialize_population(self):
         """Initialize the population with random players."""
         for _ in range(self.population_size):
@@ -66,14 +73,6 @@ class GA(Renderer):
             blockades_weight = uniform(-5.0, 0.0)
             player = Player(height_weight, lines_cleared_weight, holes_weight, blockades_weight)
             self.population.append(player)
-
-    def run(self):
-        """Run the genetic algorithm."""
-        if os.path.exists("current_state.txt"):
-            with open("current_state.txt", "r") as file:
-                state = file.readlines()
-                self.current_generation = int(state[0].strip())
-                self.current_player_index = int(state[1].strip())
 
         self.initialize_population()
         for generation in range(self.current_generation, GAConfig.num_generations + 1):
@@ -150,13 +149,6 @@ class GA(Renderer):
             player.number = player_index + 1
             self.play_game(player)
 
-    def evolve_population(self):
-        """Evolve the population using mutation and crossover."""
-        self.population.sort(key=lambda x: x.score, reverse=True)
-        top_players = self.population[:2]
-        new_population = top_players + generate_random_players(5) + generate_crossover_players(5, top_players)
-        self.population = new_population
-
     def save_generation_details(self, generation_number):
         """Save the details of each player in a record file for the generation."""
         folder_name = f"Generation_{generation_number}"
@@ -182,8 +174,16 @@ class GA(Renderer):
             file.write(f"{self.current_generation}\n")
             file.write(f"{self.current_player_index}\n")
 
+    def run(self):
+        """Run the genetic algorithm."""
+        if os.path.exists("current_state.txt"):
+            with open("current_state.txt", "r") as file:
+                state = file.readlines()
+                self.current_generation = int(state[0].strip())
+                self.current_player_index = int(state[1].strip())
+
 
 if __name__ == "__main__":
     ga = GA()
-    ga.game.turn_off_music()
+    turn_off_music()
     ga.run()
