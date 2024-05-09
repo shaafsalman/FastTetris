@@ -1,0 +1,7 @@
+Player Number: 0
+Generation Number: 0
+Height Weight: -2.674218524815546
+Lines Cleared Weight: 12.079196482681752
+Holes Weight: -2.882968282241344
+Blockades Weight: -1.8434396599880758
+Score: 0

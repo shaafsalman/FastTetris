@@ -3,6 +3,8 @@ class GAConfig:
     mutation_rate = 0.1
     crossover_rate = 0.5
     num_generations = 30
+    # !inverse
+    game_speed = 50
 
     SCREEN_WIDTH = 1000
     SCREEN_HEIGHT = 700
@@ -13,4 +15,7 @@ class GAConfig:
     BUTTON_FONT_SIZE = 28
     BUTTON_WIDTH = 300
     BUTTON_HEIGHT = 60
+
+    info_x = 320
+    info_x2 = 600
 

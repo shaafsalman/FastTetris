@@ -1,6 +1,6 @@
 import pygame
 from FastTetris.colors import Colors
-
+from  config import GAConfig
 class Renderer:
     def __init__(self):
         """Initialize the Renderer."""
@@ -10,6 +10,7 @@ class Renderer:
         self.button_font = pygame.font.Font("assets/fonts/Poppins-Regular.ttf", 28)
         self.score_surface = self.title_font.render("Score", True, Colors.white)
         self.high_score_surface = self.title_font.render("High Score:", True, Colors.white)
+        self.lines_cleared_surface = self.title_font.render("Lines Cleared:", True, Colors.white)
         self.back_surface = self.button_font.render("Back", True, Colors.white)
         self.lines_surface = self.title_font.render("Number of Lines", True, Colors.white)
         self.next_shape_surface = self.title_font.render("Next Shape", True, Colors.white)
@@ -27,14 +28,14 @@ class Renderer:
         self.vertical_spacing = 120
 
         # Define the horizontal positions for all elements
-        self.score_x = 320
+        self.score_x = GAConfig.info_x
         self.high_score_x = self.score_x + 300
         self.back_x = self.high_score_x + 200
         self.current_shape_x = 320
-        self.next_x = 620
-        self.generation_x = 720
-        self.agent_x = 620
-        self.player_weights_x = 320
+        self.next_x = GAConfig.info_x2
+        self.generation_x = GAConfig.info_x2 + 100
+        self.agent_x = GAConfig.info_x2
+        self.player_weights_x = GAConfig.info_x
 
         # Define the initial vertical position for each row
         self.score_y = 20
@@ -43,6 +44,8 @@ class Renderer:
         self.agent_y = self.current_shape_y + self.vertical_spacing
         self.agent_y = self.current_shape_y + self.vertical_spacing
         self.player_weights_y = self.agent_y + self.vertical_spacing
+        self.lines_cleared_x = 620
+        self.lines_cleared_y = self.agent_y + self.vertical_spacing+ self.vertical_spacing
 
         # Define the dimensions of the back button
         self.back_button_width = 100
@@ -58,12 +61,14 @@ class Renderer:
         self.agent_rect = pygame.Rect(self.agent_x, self.agent_y, 200, 40)
         self.player_weights_rect = pygame.Rect(self.player_weights_x, self.player_weights_y, 300, 40)
 
-    def render(self, game, current_player, highest_score, agent_type):
+
+    def render(self, game, current_player, highest_score, agent_type, lines_cleared):
         """Render the game screen."""
         self.screen.fill(Colors.BACKGROUND_COLOR)
 
         self.render_score(game)
         self.render_high_score(highest_score)
+        self.render_lines_cleared(lines_cleared)
         self.render_back_button()
         self.render_current_shape()
         self.render_next_shape()
@@ -89,6 +94,12 @@ class Renderer:
         self.screen.blit(self.high_score_surface, (self.high_score_x, self.score_y))
         high_score_value_surface = self.score_font.render(str(highest_score), True, Colors.white)
         self.screen.blit(high_score_value_surface, (self.high_score_x, self.score_y + 35))
+
+    def render_lines_cleared(self, lines_cleared):
+        """Render the lines Cleared."""
+        self.screen.blit(self.lines_cleared_surface , (self.lines_cleared_x, self.lines_cleared_y))
+        lines_cleared_surface = self.score_font.render(str(lines_cleared), True, Colors.white)
+        self.screen.blit(lines_cleared_surface, (self.lines_cleared_x, self.lines_cleared_y + 35))
 
     def render_back_button(self):
         """Render the back button."""

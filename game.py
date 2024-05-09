@@ -25,6 +25,94 @@ def save_highest_score(self):
         file.write(str(self.highest_score))
 
 
+def calculate_holes(grid):
+    """
+    Calculates the number of holes in the grid.
+    """
+    holes = 0
+    for col in range(grid.num_cols):
+        for row in range(grid.num_rows - 1):
+            if grid.is_empty(row, col) and not grid.is_empty(row + 1, col):
+                holes += 1
+    return holes
+
+
+def calculate_all_holes(grid):
+    """
+    Calculates the number of minor, major, and absolute holes in the grid.
+    """
+    minor_holes = 0
+    major_holes = 0
+    absolute_holes = 0
+
+    for col in range(grid.num_cols):
+        topmost_filled_row = None
+        for row in range(grid.num_rows):
+            if not grid.is_empty(row, col):
+                topmost_filled_row = row
+                break
+
+        if topmost_filled_row is not None:
+            for row in range(topmost_filled_row):
+                if grid.is_empty(row, col):
+                    if col == 0 or not grid.is_empty(row, col - 1):
+                        minor_holes += 1
+
+            for row in range(topmost_filled_row + 1, grid.num_rows):
+                if grid.is_empty(row, col):
+                    if col == 0 or not grid.is_empty(row, col - 1):
+                        absolute_holes += 1
+
+            if topmost_filled_row < grid.num_rows - 1 and grid.is_empty(topmost_filled_row + 1, col):
+                major_holes += 1
+
+    return minor_holes, major_holes, absolute_holes
+
+
+def count_complete_rows(grid):
+    """
+    Counts the number of complete rows in the grid.
+    """
+    complete_rows = 0
+
+    for row in range(grid.num_rows):
+        is_complete = all(grid[row][col] != 0 for col in range(grid.num_cols))
+        if is_complete:
+            complete_rows += 1
+
+    return complete_rows
+
+
+def calculate_blockades(grid):
+    """
+    Calculates the number of blockades in the grid.
+    """
+    blockades = 0
+    for col in range(grid.num_cols):
+        for row in range(grid.num_rows - 1):
+            if not grid.is_empty(row, col) and grid.is_empty(row + 1, col):
+                blockades += 1
+    return blockades
+
+
+def calculate_height(grid):
+    """
+    Calculates the height of the highest column in the grid.
+    """
+    heights = [0] * grid.num_cols
+    for col in range(grid.num_cols):
+        for row in range(grid.num_rows):
+            if not grid.is_empty(row, col):
+                heights[col] = grid.num_rows - row
+                break
+    return max(heights)
+
+
+def turn_off_music():
+    """Turns off all music."""
+    pygame.mixer.music.stop()
+
+
 class Game:
     def __init__(self):
         self.grid = Grid()
@@ -42,7 +130,7 @@ class Game:
         self.clear_sound = pygame.mixer.Sound("Sounds/clear.ogg")
 
         pygame.mixer.music.load("Sounds/music.ogg")
-        pygame.mixer.music.play(-1)
+        # pygame.mixer.music.play(-1)
 
     def update_score(self, lines_cleared, move_down_points):
         if lines_cleared == 1:
@@ -129,10 +217,6 @@ class Game:
                 return False
         return True
 
-    def turn_off_music(self):
-        """Turns off all music."""
-        pygame.mixer.music.stop()
-
     def draw(self, screen):
         self.grid.draw(screen)
         self.current_block.draw(screen, 11, 11)
@@ -164,84 +248,6 @@ class Game:
             if tile.row == self.grid.num_rows - 1:
                 return True
         return False
-
-    def calculate_holes(self, grid):
-        """
-        Calculates the number of holes in the grid.
-        """
-        holes = 0
-        for col in range(grid.num_cols):
-            for row in range(grid.num_rows - 1):
-                if grid.is_empty(row, col) and not grid.is_empty(row + 1, col):
-                    holes += 1
-        return holes
-
-    def calculate_all_holes(self, grid):
-        """
-        Calculates the number of minor, major, and absolute holes in the grid.
-        """
-        minor_holes = 0
-        major_holes = 0
-        absolute_holes = 0
-
-        for col in range(grid.num_cols):
-            topmost_filled_row = None
-            for row in range(grid.num_rows):
-                if not grid.is_empty(row, col):
-                    topmost_filled_row = row
-                    break
-
-            if topmost_filled_row is not None:
-                for row in range(topmost_filled_row):
-                    if grid.is_empty(row, col):
-                        if col == 0 or not grid.is_empty(row, col - 1):
-                            minor_holes += 1
-
-                for row in range(topmost_filled_row + 1, grid.num_rows):
-                    if grid.is_empty(row, col):
-                        if col == 0 or not grid.is_empty(row, col - 1):
-                            absolute_holes += 1
-
-                if topmost_filled_row < grid.num_rows - 1 and grid.is_empty(topmost_filled_row + 1, col):
-                    major_holes += 1
-
-        return minor_holes, major_holes, absolute_holes
-
-    def count_complete_rows(self, grid):
-        """
-        Counts the number of complete rows in the grid.
-        """
-        complete_rows = 0
-
-        for row in range(grid.num_rows):
-            is_complete = all(grid[row][col] != 0 for col in range(grid.num_cols))
-            if is_complete:
-                complete_rows += 1
-
-        return complete_rows
-
-    def calculate_blockades(self, grid):
-        """
-        Calculates the number of blockades in the grid.
-        """
-        blockades = 0
-        for col in range(grid.num_cols):
-            for row in range(grid.num_rows - 1):
-                if not grid.is_empty(row, col) and grid.is_empty(row + 1, col):
-                    blockades += 1
-        return blockades
-
-    def calculate_height(self, grid):
-        """
-        Calculates the height of the highest column in the grid.
-        """
-        heights = [0] * grid.num_cols
-        for col in range(grid.num_cols):
-            for row in range(grid.num_rows):
-                if not grid.is_empty(row, col):
-                    heights[col] = grid.num_rows - row
-                    break
-        return max(heights)
 
     def copy(self):
         copied_game = Game()
@@ -284,7 +290,7 @@ class Game:
             elif move == "DOWN":
                 # attached = self.move_down()
                 self.current_block.move(1, 0)
-                if self.block_inside() == False or self.block_fits() == False:
+                if self.block_fits() == False:
                     attached = True
                     self.current_block.move(-1, 0)
                     full_rows = self.lock_block()
@@ -294,11 +300,11 @@ class Game:
                 self.grid.print_grid()
                 self.lock_block()
                 # holes = self.calculate_holes(self.grid)
-                blockades = self.calculate_blockades(self.grid)
+                blockades = calculate_blockades(self.grid)
                 full_rows = self.lines_cleared
-                max_height = self.calculate_height(self.grid)
+                max_height = calculate_height(self.grid)
 
-                minor_holes, major_holes, absolute_holes = self.calculate_all_holes(self.grid)
+                minor_holes, major_holes, absolute_holes = calculate_all_holes(self.grid)
 
                 print("minor_holes, major_holes, absolute_holes")
                 print(minor_holes, ",", major_holes, ",", absolute_holes)
