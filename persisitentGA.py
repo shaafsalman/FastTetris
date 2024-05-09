@@ -39,7 +39,8 @@ def generate_random_players(num_players):
         random_players.append(player)
     return random_players
 
-class GA(Renderer):
+
+class persistent_ga(Renderer):
     def __init__(self):
         super().__init__()
         self.population_size = GAConfig.population_size
@@ -93,8 +94,8 @@ class GA(Renderer):
             print("All generations completed.")
 
         # # Check if it's time to mutate
-            # if self.generation_count % 5 == 0:
-            #     self.mutate_population()
+        # if self.generation_count % 5 == 0:
+        #     self.mutate_population()
 
     def save_generation_data(self, generation_number):
         with open("generation_data.txt", "w") as file:
@@ -228,5 +229,5 @@ class GA(Renderer):
 
 
 if __name__ == "__main__":
-    ga = GA()
+    ga = persistent_ga()
     ga.run()

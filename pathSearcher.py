@@ -61,7 +61,6 @@ class PathSearcher:
                 self.holes_weight * path.holes +
                 self.blockades_weight * path.blockades
 
-
             # self.height_weight * path.height +
             # self.lines_cleared_weight * path.lines_cleared +
             # self.holes_weight * path.holes
