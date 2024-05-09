@@ -1,7 +1,7 @@
 import os
 
-from FastTetris.grid import Grid
-from FastTetris.all_blocks import *
+from grid import Grid
+from all_blocks import *
 import random
 import pygame
 
@@ -189,6 +189,24 @@ class Game:
             self.game_over = True
         return rows_cleared
 
+    def lock_block2(self):
+        # print("Lock Block Called")
+        # self.grid.print_grid()
+        tiles = self.current_block.get_cell_positions()
+        for position in tiles:
+            self.grid.grid[position.row][position.column] = self.current_block.id
+
+        rows_cleared = self.grid.clear_full_rows()
+        if rows_cleared > 0:
+            self.clear_sound.play()
+            self.update_score(rows_cleared, 0)
+            self.lines_cleared += rows_cleared
+            self.update_numer_of_lines(rows_cleared)
+        if not self.block_fits():
+            self.game_over = True
+        return rows_cleared
+
+
     def reset(self):
         self.grid.reset()
         self.blocks = [IBlock(), JBlock(), LBlock(), OBlock(), SBlock(), TBlock(), ZBlock()]
@@ -290,10 +308,10 @@ class Game:
             elif move == "DOWN":
                 # attached = self.move_down()
                 self.current_block.move(1, 0)
-                if self.block_fits() == False:
+                if not self.block_fits():
                     attached = True
                     self.current_block.move(-1, 0)
-                    full_rows = self.lock_block()
+                    full_rows = self.lock_block2()
 
             if self.check_collision() or self.block_at_bottom() or attached:
                 print("Final Grid")

@@ -1,4 +1,4 @@
-from FastTetris.path import Path
+from path import Path
 
 
 def calculate_block_moves(grid, col, rotation):

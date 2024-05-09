@@ -3,7 +3,7 @@ import sys
 from config import GAConfig
 from emulator import Human_Emulator
 from GA import GA
-from FastTetris.colors import Colors
+from colors import Colors
 
 
 def initialize_pygame():

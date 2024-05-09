@@ -1,4 +1,4 @@
-from FastTetris.colors import Colors
+from colors import Colors
 import pygame
 from position import Position
 

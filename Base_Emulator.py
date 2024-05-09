@@ -1,7 +1,7 @@
 import pygame
 
 from game import Game
-from FastTetris.colors import Colors
+from colors import Colors
 
 
 class TetrisBase:

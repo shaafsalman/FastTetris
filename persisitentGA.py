@@ -1,4 +1,3 @@
-
 import os
 import pygame
 import sys
@@ -40,17 +39,17 @@ def generate_random_players(num_players):
         random_players.append(player)
     return random_players
 
-
 class GA(Renderer):
     def __init__(self):
         super().__init__()
         self.population_size = GAConfig.population_size
         self.mutation_rate = GAConfig.mutation_rate
-        self.crossover_rate = GAConfig.crossover_rate
         self.population = []
         self.clock = pygame.time.Clock()
         self.game = Game()
+        self.generation_count = 0  # Track the number of generations processed
 
+        self.load_generation_data()  # Load previous generation data
         self.GAME_UPDATE = pygame.USEREVENT
         self.highest_score = self.game.highest_score
         pygame.time.set_timer(self.GAME_UPDATE, 60)
@@ -74,14 +73,58 @@ class GA(Renderer):
             self.population.append(player)
 
     def run(self):
-        self.initialize_population()
-        for generation in range(GAConfig.num_generations):
-            print(f"Generation {generation + 1}")
-            self.play_generation(generation + 1)
-            self.evolve_population()
+        # Check if previous generation data exists
+        if os.path.exists("generation_data.txt"):
+            self.load_generation_data()  # Load previous generation data
+        else:
+            self.initialize_population()  # Initialize population if no previous data found
 
-            print(f"Best player's score in generation {generation + 1}: {self.population[0].score}")
+        for generation in range(self.generation_count + 1, GAConfig.num_generations + 1):
+            print(f"Generation {generation}")
+            self.play_generation(generation)
+            self.evolve_population()
+            self.save_generation_data(generation)  # Save generation data
+
+            print(f"Best player's score in generation {generation}: {self.population[0].score}")
             self.clock.tick(2000)
+
+            print(f"Generation count: {self.generation_count}")
+
+            print("All generations completed.")
+
+        # # Check if it's time to mutate
+            # if self.generation_count % 5 == 0:
+            #     self.mutate_population()
+
+    def save_generation_data(self, generation_number):
+        with open("generation_data.txt", "w") as file:
+            file.write(f"Generation: {generation_number}\n")
+            for i, player in enumerate(self.population):
+                file.write(
+                    f"Player {i + 1} Weights: {player.height_weight}, {player.lines_cleared_weight}, {player.holes_weight}, {player.blockades_weight}\n")
+
+    def load_generation_data(self):
+        if os.path.exists("generation_data.txt"):
+            with open("generation_data.txt", "r") as file:
+                lines = file.readlines()
+                for line in lines:
+                    if line.startswith("Generation:"):
+                        self.generation_count = int(line.split(":")[1])
+                    elif line.startswith("Player"):
+                        weights = [float(val) for val in line.split(":")[1].strip().split(',')]
+                        player = Player(*weights)
+                        self.population.append(player)
+
+    def mutate_population(self):
+        mutation_count = int(len(self.population) * self.mutation_rate)
+        for _ in range(mutation_count):
+            index = random.randint(0, len(self.population) - 1)
+            player = self.population[index]
+
+            player.height_weight += random.uniform(-15.0, 0.0)
+            player.lines_cleared_weight += random.uniform(0, 15.0)
+            player.holes_weight += random.uniform(-15.0, 0.0)
+            player.blockades_weight += random.uniform(-15.0, 0.0)
 
     def play_game(self, current_player):
         # Initialize variables
@@ -111,11 +154,11 @@ class GA(Renderer):
             current_grid = self.game.grid.copy()
 
             # Get the path from the current player
+            path = Path()
+
+            # Get the path from the current player
             path = current_player.get_path(self.game, current_grid)
             moves = path.moves
-            print("path----------------------------------")
-            path.print_details()
-            print("path----------------------------------")
 
             # Execute each move in the path
             for move in moves:
@@ -164,13 +207,10 @@ class GA(Renderer):
     def play_generation(self, generation_number):
         """Play games for all players in the current generation."""
         player_number = 1
-        game_inintial = self.game.copy()
         for player in self.population:
             player.generation_number = generation_number
             player.number = player_number
-
             self.play_game(player)
-            self.game = game_inintial
             player_number += 1
             self.game.lines_cleared = 0
 
@@ -189,5 +229,4 @@ class GA(Renderer):
 
 if __name__ == "__main__":
     ga = GA()
-    # turn_off_music()
     ga.run()

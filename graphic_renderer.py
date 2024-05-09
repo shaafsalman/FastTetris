@@ -1,5 +1,5 @@
 import pygame
-from FastTetris.colors import Colors
+from colors import Colors
 from  config import GAConfig
 class Renderer:
     def __init__(self):

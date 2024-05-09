@@ -1,4 +1,4 @@
-from FastTetris.block import Block
+from block import Block
 from position import Position
 
 """
