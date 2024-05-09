@@ -12,29 +12,28 @@ from path import Path
 
 
 def generate_crossover_players(num_players, top_players):
-    """Generate players through crossover of top players."""
     crossover_players = []
     for _ in range(num_players):
-        # Randomly select two parents for crossover
         parent1, parent2 = random.sample(top_players, 2)
-        # Perform crossover
-        height_weight = uniform(parent1.height_weight, parent2.height_weight)
-        lines_cleared_weight = uniform(parent1.lines_cleared_weight, parent2.lines_cleared_weight)
-        holes_weight = uniform(parent1.holes_weight, parent2.holes_weight)
-        blockades_weight = uniform(parent1.blockades_weight, parent2.blockades_weight)
+        crossover_point = random.randint(1, len(parent1) - 1)
+        height_weight = parent1[:crossover_point] + parent2[crossover_point:]
+        lines_cleared_weight = parent2[:crossover_point] + parent1[crossover_point:]
+        holes_weight = parent1[crossover_point:] + parent2[:crossover_point]
+        blockades_weight = parent2[crossover_point:] + parent1[:crossover_point]
         player = Player(height_weight, lines_cleared_weight, holes_weight, blockades_weight)
         crossover_players.append(player)
     return crossover_players
+
 
 
 def generate_random_players(num_players):
     """Generate random players with random weights."""
     random_players = []
     for _ in range(num_players):
-        height_weight = uniform(-1.0, 1.0)
-        lines_cleared_weight = uniform(-1.0, 1.0)
-        holes_weight = uniform(-1.0, 1.0)
-        blockades_weight = uniform(-1.0, 1.0)
+        height_weight = uniform(-15.0, 0.0)
+        lines_cleared_weight = uniform(0.0, 15.0)
+        holes_weight = uniform(-15.0, 0.0)
+        blockades_weight = uniform(-15.0, 0.0)
         player = Player(height_weight, lines_cleared_weight, holes_weight, blockades_weight)
         random_players.append(player)
     return random_players
@@ -45,10 +44,10 @@ class GA(Renderer):
         super().__init__()
         self.population_size = GAConfig.population_size
         self.mutation_rate = GAConfig.mutation_rate
-        self.crossover_rate = GAConfig.crossover_rate
         self.population = []
         self.clock = pygame.time.Clock()
         self.game = Game()
+        self.generation_count = 0  # Track the number of generations processed
 
         self.GAME_UPDATE = pygame.USEREVENT
         self.highest_score = self.game.highest_score
@@ -63,12 +62,6 @@ class GA(Renderer):
             holes_weight = uniform(-15.0, 0.0)
             blockades_weight = uniform(-15.0, 0.0)
 
-            # height_weight = -15
-            # lines_cleared_weight = 5
-            # holes_weight = -5
-            # blockades_weight = -1
-
-            # Create player object with random weights
             player = Player(height_weight, lines_cleared_weight, holes_weight, blockades_weight)
             self.population.append(player)
 
@@ -81,6 +74,26 @@ class GA(Renderer):
 
             print(f"Best player's score in generation {generation + 1}: {self.population[0].score}")
             self.clock.tick(2000)
+
+            # Increment generation count
+            self.generation_count += 1
+            print(f"Generation count: {self.generation_count}")  # Add this line
+
+            # Check if it's time to mutate
+            if self.generation_count % 5 == 0:
+                self.mutate_population()
+
+
+    def mutate_population(self):
+        mutation_count = int(len(self.population) * self.mutation_rate)
+        for _ in range(mutation_count):
+            index = random.randint(0, len(self.population) - 1)
+            player = self.population[index]
+
+            player.height_weight += random.uniform(-15.0, 0.0)
+            player.lines_cleared_weight += random.uniform(0, 15.0)
+            player.holes_weight += random.uniform(-15.0, 0.0)
+            player.blockades_weight += random.uniform(-15.0, 0.0)
 
     def play_game(self, current_player):
         # Initialize variables
@@ -112,13 +125,9 @@ class GA(Renderer):
             # Get the path from the current player
             path = Path()
 
-
             # Get the path from the current player
             path = current_player.get_path(self.game, current_grid)
             moves = path.moves
-            print("path----------------------------------")
-            path.print_details()
-            print("path----------------------------------")
 
             # Execute each move in the path
             for move in moves:
@@ -175,20 +184,13 @@ class GA(Renderer):
             self.game.lines_cleared = 0
 
     def evolve_population(self):
-        """Evolve the population using mutation and crossover."""
-        # Sort the population based on scores
+        """Evolve the population using crossover."""
         self.population.sort(key=lambda x: x.score, reverse=True)
-        # Take the top two players with highest score
         top_players = self.population[:2]
-        # Generate new population with mutation and crossover
-        new_population = top_players + generate_random_players(5) + generate_crossover_players(5,
-                                                                                                         top_players)
-        # Replace the old population with the new one
+        new_population = top_players + generate_random_players(5) + generate_crossover_players(5, top_players)
         self.population = new_population
-
 
 
 if __name__ == "__main__":
     ga = GA()
-    # turn_off_music()
     ga.run()
