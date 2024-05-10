@@ -32,10 +32,10 @@ def generate_random_players(num_players):
     """Generate random players with random weights."""
     random_players = []
     for _ in range(num_players):
-        height_weight = uniform(-1.0, 1.0)
-        lines_cleared_weight = uniform(-1.0, 1.0)
-        holes_weight = uniform(-1.0, 1.0)
-        blockades_weight = uniform(-1.0, 1.0)
+        height_weight = uniform(-15.0, 0.0)
+        lines_cleared_weight = uniform(0.0, 15.0)
+        holes_weight = uniform(-15.0, 0.0)
+        blockades_weight = uniform(-15.0, 0.0)
         player = Player(height_weight, lines_cleared_weight, holes_weight, blockades_weight)
         random_players.append(player)
     return random_players
@@ -50,7 +50,7 @@ class GA(Renderer):
         self.population = []
         self.clock = pygame.time.Clock()
         self.game = Game()
-
+        self.average_score = 0
         self.GAME_UPDATE = pygame.USEREVENT
         self.highest_score = self.game.highest_score
         pygame.time.set_timer(self.GAME_UPDATE, 60)
@@ -79,6 +79,8 @@ class GA(Renderer):
             print(f"Generation {generation + 1}")
             self.play_generation(generation + 1)
             self.evolve_population()
+            self.average_score = sum(player.score for player in self.population) / len(self.population)
+            print(f"Average score in generation {generation}: {self.average_score}")
 
             print(f"Best player's score in generation {generation + 1}: {self.population[0].score}")
             self.clock.tick(2000)
@@ -138,7 +140,7 @@ class GA(Renderer):
                     self.game.rotate()
 
                 # Render the game state after each move
-                self.render(self.game, current_player, self.highest_score, "AI", self.game.lines_cleared)
+                self.render(self.game, current_player, self.highest_score,self.highest_score, "AI", self.game.lines_cleared)
 
                 # Delay for smooth rendering
                 pygame.time.delay(int(GAConfig.game_speed / 50))

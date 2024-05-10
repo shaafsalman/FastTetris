@@ -4,7 +4,7 @@ class GAConfig:
     crossover_rate = 0.5
     num_generations = 50
     # !inverse
-    game_speed = 20
+    game_speed = 1000
 
     SCREEN_WIDTH = 1000
     SCREEN_HEIGHT = 700

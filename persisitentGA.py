@@ -48,9 +48,9 @@ class persistent_ga(Renderer):
         self.population = []
         self.clock = pygame.time.Clock()
         self.game = Game()
-        self.generation_count = 0  # Track the number of generations processed
-
-        self.load_generation_data()  # Load previous generation data
+        self.generation_count = 0
+        self.average_score = 0
+        self.load_generation_data()
         self.GAME_UPDATE = pygame.USEREVENT
         self.highest_score = self.game.highest_score
         pygame.time.set_timer(self.GAME_UPDATE, 60)
@@ -85,7 +85,8 @@ class persistent_ga(Renderer):
             self.play_generation(generation)
             self.evolve_population()
             self.save_generation_data(generation)  # Save generation data
-
+            self.average_score = sum(player.score for player in self.population) / len(self.population)
+            print(f"Average score in generation {generation}: {self.average_score}")
             print(f"Best player's score in generation {generation}: {self.population[0].score}")
             self.clock.tick(2000)
 
@@ -182,7 +183,7 @@ class persistent_ga(Renderer):
                     self.game.rotate()
 
                 # Render the game state after each move
-                self.render(self.game, current_player, self.highest_score, "AI", self.game.lines_cleared)
+                self.render(self.game, current_player, self.highest_score,self.average_score, "AI", self.game.lines_cleared)
 
                 # Delay for smooth rendering
                 pygame.time.delay(int(GAConfig.game_speed / 50))

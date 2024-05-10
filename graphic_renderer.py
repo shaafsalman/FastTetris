@@ -62,7 +62,7 @@ class Renderer:
         self.player_weights_rect = pygame.Rect(self.player_weights_x, self.player_weights_y, 300, 40)
 
 
-    def render(self, game, current_player, highest_score, agent_type, lines_cleared):
+    def render(self, game, current_player, highest_score,average_score, agent_type, lines_cleared):
         """Render the game screen."""
         self.screen.fill(Colors.BACKGROUND_COLOR)
 

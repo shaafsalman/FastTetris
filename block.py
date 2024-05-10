@@ -31,7 +31,6 @@ class Block:
         """
         self.row_offset += rows
         self.column_offset += columns
-        self.number_of_rotations = len(self.cells)
 
     def get_cell_positions(self):
         """
