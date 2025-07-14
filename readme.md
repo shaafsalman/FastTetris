@@ -1,14 +1,5 @@
 # Fast Tetris
 
----
-
-**Project Members:**
-
-- Shaaf Salman (ID: 21L6083)
-- Abdul Hadi (ID: 21L6077)
-- Haider Khan (ID: 21L6067)
-
----
 
 ## Summary
 
